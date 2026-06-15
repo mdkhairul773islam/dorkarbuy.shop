@@ -21,8 +21,15 @@ class SliderForm
                     ->columnSpanFull(),
                 FileUpload::make('image')
                     ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '16:5',
+                        '21:9',
+                        '16:9',
+                    ])
                     ->disk('public')
-                    ->directory('sliders'),
+                    ->directory('sliders')
+                    ->helperText('Recommended aspect ratio: 16:5 (e.g. 1920x600 px) for wide desktop screens. You can crop the image after uploading by clicking the Edit/Crop button.'),
                 FileUpload::make('video')
                     ->disk('public')
                     ->acceptedFileTypes(['video/mp4', 'video/mkv', 'video/webm'])

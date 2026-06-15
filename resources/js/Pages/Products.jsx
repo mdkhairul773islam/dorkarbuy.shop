@@ -161,10 +161,10 @@ export default function Products({ auth, products, categories, filters, fbEventI
                                                     <img
                                                         src={`/storage/${product.image}`}
                                                         alt={product.name}
-                                                        className="w-full h-56 object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                                                        className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-56 bg-gray-200 flex items-center justify-center">
+                                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                                                         <span className="text-gray-500">No image</span>
                                                     </div>
                                                 )}

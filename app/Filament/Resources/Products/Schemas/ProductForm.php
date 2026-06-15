@@ -108,14 +108,25 @@ class ProductForm
                     ->columnSpanFull(),
                 FileUpload::make('image')
                     ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '1:1',
+                    ])
+                    ->imageCropAspectRatio('1:1')
                     ->disk('public')
                     ->visibility('public')
                     ->getUploadedFileNameForStorageUsing(
                         fn ($file) => 'products/'.$file->hashName()
-                    ),
+                    )
+                    ->helperText('Product image must be 1:1 aspect ratio (square, e.g. 800x800 px). Click the Edit button on upload to adjust crop.'),
                 FileUpload::make('images')
                     ->multiple()
                     ->image()
+                    ->imageEditor()
+                    ->imageEditorAspectRatios([
+                        '1:1',
+                    ])
+                    ->imageCropAspectRatio('1:1')
                     ->disk('public')
                     ->visibility('public')
                     ->directory('products/gallery')
@@ -123,7 +134,8 @@ class ProductForm
                         fn ($file) => 'products/gallery/'.$file->hashName()
                     )
                     ->columnSpanFull()
-                    ->label('Product Gallery Images'),
+                    ->label('Product Gallery Images')
+                    ->helperText('Gallery images must be 1:1 aspect ratio (square, e.g. 800x800 px). Click the Edit button on each uploaded image to crop.'),
                 TextInput::make('stock')
                     ->required()
                     ->numeric()

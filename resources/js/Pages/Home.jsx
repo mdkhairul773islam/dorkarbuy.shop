@@ -44,7 +44,7 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
 
             {/* Hero Slider Section */}
             {sliders && sliders.length > 0 ? (
-                <div className="relative w-full h-[500px] md:h-[600px] bg-[#0B1E36] overflow-hidden">
+                <div className="relative w-full bg-[#0B1E36] overflow-hidden">
                     <Swiper
                         spaceBetween={0}
                         centeredSlides={true}
@@ -52,53 +52,102 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                         pagination={{ clickable: true }}
                         navigation={true}
                         modules={[Autoplay, Pagination, Navigation]}
-                        className="w-full h-full"
+                        className="w-full"
                     >
-                        {sliders.map((slider) => (
-                            <SwiperSlide key={slider.id} className="relative w-full h-full flex items-center">
-                                {/* Background Image/Video */}
-                                {slider.video ? (
-                                    <video 
-                                        className="absolute inset-0 w-full h-full object-cover opacity-50" 
-                                        src={`/storage/${slider.video}`} 
-                                        autoPlay loop muted playsInline 
-                                    />
-                                ) : slider.image ? (
-                                    <img 
-                                        src={`/storage/${slider.image}`} 
-                                        alt={slider.title} 
-                                        className="absolute inset-0 w-full h-full object-cover opacity-50" 
-                                    />
-                                ) : (
-                                    <div className="absolute inset-0 w-full h-full bg-slate-900 opacity-50" />
-                                )}
+                        {sliders.map((slider) => {
+                            const hasOverlay = slider.title || slider.description || slider.button_text;
+                            return (
+                                <SwiperSlide key={slider.id} className="relative w-full">
+                                    {hasOverlay ? (
+                                        <div className="relative w-full h-[350px] sm:h-[450px] md:h-[550px] lg:h-[600px] flex items-center">
+                                            {/* Background Image/Video */}
+                                            {slider.video ? (
+                                                <video 
+                                                    className="absolute inset-0 w-full h-full object-cover opacity-60" 
+                                                    src={`/storage/${slider.video}`} 
+                                                    autoPlay loop muted playsInline 
+                                                />
+                                            ) : slider.image ? (
+                                                <img 
+                                                    src={`/storage/${slider.image}`} 
+                                                    alt={slider.title} 
+                                                    className="absolute inset-0 w-full h-full object-cover opacity-60" 
+                                                />
+                                            ) : (
+                                                <div className="absolute inset-0 w-full h-full bg-slate-900 opacity-60" />
+                                            )}
 
-                                {/* Overlay Content */}
-                                <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-[80%] justify-center">
-                                    <div className="sm:text-center lg:text-left pt-10 md:pt-16">
-                                        {slider.title && (
-                                            <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl drop-shadow-lg">
-                                                {slider.title}
-                                            </h1>
-                                        )}
-                                        {slider.description && (
-                                            <p className="mt-4 text-base text-gray-200 sm:mt-6 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-6 md:text-xl lg:mx-0 drop-shadow-md min-h-[3rem]">
-                                                {slider.description}
-                                            </p>
-                                        )}
-                                        {slider.button_text && (
-                                            <div className="mt-10 sm:mt-12 md:mt-16 sm:flex sm:justify-center lg:justify-start">
-                                                <div className="rounded-md shadow hover:shadow-lg transition-shadow">
-                                                    <Link href={slider.button_link || '#'} className="w-full flex items-center justify-center px-8 py-3 lg:py-4 border border-transparent text-base font-bold rounded-md text-orange-600 bg-white hover:bg-orange-50 md:text-lg md:px-10 transition-colors">
-                                                        {slider.button_text}
-                                                    </Link>
+                                            {/* Overlay Content */}
+                                            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-[80%] justify-center">
+                                                <div className="sm:text-center lg:text-left pt-10 md:pt-16">
+                                                    {slider.title && (
+                                                        <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl drop-shadow-lg">
+                                                            {slider.title}
+                                                        </h1>
+                                                    )}
+                                                    {slider.description && (
+                                                        <p className="mt-4 text-base text-gray-200 sm:mt-6 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-6 md:text-xl lg:mx-0 drop-shadow-md min-h-[3rem]">
+                                                            {slider.description}
+                                                        </p>
+                                                    )}
+                                                    {slider.button_text && (
+                                                        <div className="mt-10 sm:mt-12 md:mt-16 sm:flex sm:justify-center lg:justify-start">
+                                                            <div className="rounded-md shadow hover:shadow-lg transition-shadow">
+                                                                <Link href={slider.button_link || '#'} className="w-full flex items-center justify-center px-8 py-3 lg:py-4 border border-transparent text-base font-bold rounded-md text-orange-600 bg-white hover:bg-orange-50 md:text-lg md:px-10 transition-colors">
+                                                                    {slider.button_text}
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                        ))}
+                                        </div>
+                                    ) : (
+                                        // Slider without text overlay (Full-width pre-designed banner image)
+                                        <div className="w-full relative bg-slate-900">
+                                            {slider.button_link ? (
+                                                <Link 
+                                                    href={slider.button_link.startsWith('http') ? slider.button_link : (slider.button_link.startsWith('/') ? slider.button_link : `/products/${slider.button_link}`)} 
+                                                    className="block w-full"
+                                                >
+                                                    {slider.video ? (
+                                                        <video 
+                                                            className="w-full h-auto block" 
+                                                            src={`/storage/${slider.video}`} 
+                                                            autoPlay loop muted playsInline 
+                                                        />
+                                                    ) : slider.image ? (
+                                                        <img 
+                                                            src={`/storage/${slider.image}`} 
+                                                            alt="Slider Banner" 
+                                                            className="w-full h-auto block" 
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-[300px] sm:h-[400px] bg-slate-900" />
+                                                    )}
+                                                </Link>
+                                            ) : (
+                                                slider.video ? (
+                                                    <video 
+                                                        className="w-full h-auto block" 
+                                                        src={`/storage/${slider.video}`} 
+                                                        autoPlay loop muted playsInline 
+                                                    />
+                                                ) : slider.image ? (
+                                                    <img 
+                                                        src={`/storage/${slider.image}`} 
+                                                        alt="Slider Banner" 
+                                                        className="w-full h-auto block" 
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-[300px] sm:h-[400px] bg-slate-900" />
+                                                )
+                                            )}
+                                        </div>
+                                    )}
+                                </SwiperSlide>
+                            );
+                        })}
                     </Swiper>
                 </div>
             ) : (
@@ -200,10 +249,10 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                                             <img
                                                 src={`/storage/${product.image}`}
                                                 alt={product.name}
-                                                className="w-full h-56 object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                                                className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                                             />
                                         ) : (
-                                            <div className="w-full h-56 bg-gray-200 flex items-center justify-center">
+                                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                                                 <span className="text-gray-500">No image</span>
                                             </div>
                                         )}
