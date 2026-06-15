@@ -7,82 +7,62 @@ export default function ProductDetail({ auth, product, fbEventId }) {
     const [isLookInsideOpen, setIsLookInsideOpen] = useState(false);
     const [activeImage, setActiveImage] = useState(null);
 
-    // Zoom Lightbox States
-    const [isZoomOpen, setIsZoomOpen] = useState(false);
-    const [zoomScale, setZoomScale] = useState(1);
-    const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    // Inline Hover Zoom States
+    const [zoomStyle, setZoomStyle] = useState({ transformOrigin: 'center', transform: 'scale(1)' });
+    const [isHovered, setIsHovered] = useState(false);
 
-    // Collect all gallery images in an array
-    const allImages = [];
-    if (product.image) {
-        allImages.push(`/storage/${product.image}`);
-    }
-    if (product.images && product.images.length > 0) {
-        product.images.forEach(img => {
-            const path = `/storage/${img}`;
-            if (!allImages.includes(path)) {
-                allImages.push(path);
-            }
-        });
-    }
-
-    // Panning handlers
-    const handleMouseDown = (e) => {
-        if (zoomScale <= 1) return;
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - zoomPosition.x, y: e.clientY - zoomPosition.y });
+    const handleMouseEnter = () => {
+        setIsHovered(true);
     };
 
     const handleMouseMove = (e) => {
-        if (!isDragging) return;
-        setZoomPosition({
-            x: e.clientX - dragStart.x,
-            y: e.clientY - dragStart.y
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        // Calculate percentage of mouse position
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+        setZoomStyle({
+            transformOrigin: `${x}% ${y}%`,
+            transform: 'scale(2.2)'
         });
     };
 
-    const handleMouseUp = () => {
-        setIsDragging(false);
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        setZoomStyle({
+            transformOrigin: 'center',
+            transform: 'scale(1)'
+        });
     };
 
-    const handleImageClick = (e) => {
-        e.stopPropagation();
-        if (zoomScale === 1) {
-            setZoomScale(2);
-            setZoomPosition({ x: 0, y: 0 });
-        } else {
-            setZoomScale(1);
-            setZoomPosition({ x: 0, y: 0 });
+    const handleTouchStart = () => {
+        setIsHovered(true);
+    };
+
+    const handleTouchMove = (e) => {
+        if (e.touches.length === 0) return;
+        const touch = e.touches[0];
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        const x = ((touch.clientX - left) / width) * 100;
+        const y = ((touch.clientY - top) / height) * 100;
+        
+        // Prevent default scrolling on mobile when panning the image
+        if (e.cancelable) {
+            e.preventDefault();
         }
+
+        setZoomStyle({
+            transformOrigin: `${x}% ${y}%`,
+            transform: 'scale(2.2)'
+        });
     };
 
-    // Keyboard navigation listener
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (!isZoomOpen) return;
-            if (e.key === 'Escape') {
-                setIsZoomOpen(false);
-                setZoomScale(1);
-                setZoomPosition({ x: 0, y: 0 });
-            } else if (e.key === 'ArrowLeft' && allImages.length > 1) {
-                const currentIndex = allImages.indexOf(activeImage);
-                const newIndex = currentIndex === 0 ? allImages.length - 1 : currentIndex - 1;
-                setActiveImage(allImages[newIndex]);
-                setZoomScale(1);
-                setZoomPosition({ x: 0, y: 0 });
-            } else if (e.key === 'ArrowRight' && allImages.length > 1) {
-                const currentIndex = allImages.indexOf(activeImage);
-                const newIndex = currentIndex === allImages.length - 1 ? 0 : currentIndex + 1;
-                setActiveImage(allImages[newIndex]);
-                setZoomScale(1);
-                setZoomPosition({ x: 0, y: 0 });
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isZoomOpen, activeImage, allImages]);
+    const handleTouchEnd = () => {
+        setIsHovered(false);
+        setZoomStyle({
+            transformOrigin: 'center',
+            transform: 'scale(1)'
+        });
+    };
 
     useEffect(() => {
         if (product.image) {
@@ -176,18 +156,19 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                         <div className="flex flex-col">
                             <div className="w-full relative shadow-sm rounded-2xl overflow-hidden bg-white border border-gray-200 p-4 flex items-center justify-center min-h-[300px] sm:min-h-[450px]">
                                 {activeImage ? (
-                                    <div 
-                                        className="relative group cursor-pointer w-full flex justify-center"
-                                        onClick={() => (product.type === 'book' && product.look_inside_type) ? setIsLookInsideOpen(true) : setIsZoomOpen(true)}
-                                    >
-                                        <img
-                                            src={activeImage}
-                                            alt={product.name}
-                                            className="w-auto h-auto max-w-full max-h-[450px] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-                                        />
-                                        
-                                        {/* Look Inside Overlay */}
-                                        {product.type === 'book' && product.look_inside_type && (
+                                    (product.type === 'book' && product.look_inside_type) ? (
+                                        /* Book look-inside clickable container */
+                                        <div 
+                                            className="relative group cursor-pointer w-full flex justify-center"
+                                            onClick={() => setIsLookInsideOpen(true)}
+                                        >
+                                            <img
+                                                src={activeImage}
+                                                alt={product.name}
+                                                className="w-auto h-auto max-w-full max-h-[450px] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                                            />
+                                            
+                                            {/* Look Inside Overlay */}
                                             <div className="absolute top-0 inset-x-0 w-full bg-white bg-opacity-95 py-2.5 px-4 shadow text-center transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                                                 <div className="text-orange-600 font-bold flex items-center justify-center space-x-2">
                                                     <span>Look Inside</span>
@@ -196,22 +177,42 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                                     </svg>
                                                 </div>
                                             </div>
-                                        )}
-                                        {product.type === 'book' && product.look_inside_type && (
                                             <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-md z-10 flex items-center space-x-1 outline outline-1 outline-gray-200">
                                                 <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM9 13H7v-2h2v2zm0-4H7V5h2v4z"/></svg>
                                                 <span className="text-xs font-bold text-gray-700">Look Inside</span>
                                             </div>
-                                        )}
-                                        {/* Zoom Indicator for non-book or books without look inside */}
-                                        {(product.type !== 'book' || !product.look_inside_type) && (
-                                            <div className="absolute top-4 right-4 bg-white hover:bg-orange-50 p-2.5 rounded-full shadow-md z-10 transition-colors duration-200 outline outline-1 outline-gray-200 flex items-center justify-center">
-                                                <svg className="w-5 h-5 text-gray-600 hover:text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
-                                                </svg>
-                                            </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    ) : (
+                                        /* Other products: Inline Hover Magnifier */
+                                        <div 
+                                            className="relative w-full flex justify-center overflow-hidden"
+                                            onMouseEnter={handleMouseEnter}
+                                            onMouseMove={handleMouseMove}
+                                            onMouseLeave={handleMouseLeave}
+                                            onTouchStart={handleTouchStart}
+                                            onTouchMove={handleTouchMove}
+                                            onTouchEnd={handleTouchEnd}
+                                            style={{ cursor: 'zoom-in' }}
+                                        >
+                                            <img
+                                                src={activeImage}
+                                                alt={product.name}
+                                                className="w-auto h-auto max-w-full max-h-[450px] object-contain select-none transition-transform duration-100 ease-out origin-center"
+                                                style={isHovered ? zoomStyle : { transform: 'scale(1)', transformOrigin: 'center' }}
+                                                draggable={false}
+                                            />
+                                            
+                                            {/* Hover Zoom Instructions Overlay */}
+                                            {!isHovered && (
+                                                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2.5 py-1.5 rounded-full shadow-md z-10 flex items-center space-x-1 outline outline-1 outline-gray-200 pointer-events-none">
+                                                    <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                                                    </svg>
+                                                    <span className="text-[10px] font-bold text-gray-700">Hover to Zoom</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
                                 ) : (
                                     <div className="w-full h-96 bg-gray-100 flex items-center justify-center rounded-2xl">
                                         <span className="text-gray-400">No image</span>
@@ -472,156 +473,6 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
-
-            {/* Image Zoom Modal (Lightbox) */}
-            {isZoomOpen && (product.type !== 'book' || !product.look_inside_type) && (
-                <div className="fixed inset-0 z-50 overflow-hidden bg-black bg-opacity-95 flex flex-col justify-between" role="dialog" aria-modal="true">
-                    {/* Top Control Bar */}
-                    <div className="w-full flex items-center justify-between p-4 bg-gradient-to-b from-black/80 to-transparent z-10">
-                        <div className="text-white font-bold text-sm sm:text-base max-w-[50%] truncate">
-                            {product.name}
-                        </div>
-                        
-                        {/* Control Buttons */}
-                        <div className="flex items-center space-x-2 sm:space-x-3">
-                            {/* Zoom Out */}
-                            <button
-                                onClick={() => {
-                                    setZoomScale(prev => Math.max(0.5, prev - 0.25));
-                                    if (zoomScale <= 1.25) setZoomPosition({ x: 0, y: 0 });
-                                }}
-                                className="text-white hover:text-orange-400 bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors focus:outline-none"
-                                title="Zoom Out"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 12H4" />
-                                </svg>
-                            </button>
-                            
-                            {/* Scale Indicator / Reset */}
-                            <button
-                                onClick={() => {
-                                    setZoomScale(1);
-                                    setZoomPosition({ x: 0, y: 0 });
-                                }}
-                                className="text-white hover:text-orange-400 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors focus:outline-none"
-                                title="Reset Zoom"
-                            >
-                                {Math.round(zoomScale * 100)}%
-                            </button>
-
-                            {/* Zoom In */}
-                            <button
-                                onClick={() => setZoomScale(prev => Math.min(3, prev + 0.25))}
-                                className="text-white hover:text-orange-400 bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors focus:outline-none"
-                                title="Zoom In"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-
-                            {/* Close */}
-                            <button
-                                onClick={() => {
-                                    setIsZoomOpen(false);
-                                    setZoomScale(1);
-                                    setZoomPosition({ x: 0, y: 0 });
-                                }}
-                                className="text-white hover:text-orange-400 bg-orange-600 hover:bg-orange-700 p-2 rounded-lg transition-colors focus:outline-none"
-                                title="Close"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Image Viewer Area */}
-                    <div 
-                        className="flex-1 w-full relative flex items-center justify-center overflow-hidden select-none"
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
-                    >
-                        {/* Left Nav Button */}
-                        {allImages.length > 1 && (
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    const currentIndex = allImages.indexOf(activeImage);
-                                    const newIndex = currentIndex === 0 ? allImages.length - 1 : currentIndex - 1;
-                                    setActiveImage(allImages[newIndex]);
-                                    setZoomScale(1);
-                                    setZoomPosition({ x: 0, y: 0 });
-                                }}
-                                className="absolute left-4 z-10 text-white hover:text-orange-400 bg-black/40 hover:bg-black/60 p-3 rounded-full transition-colors focus:outline-none"
-                            >
-                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </button>
-                        )}
-
-                        {/* Image Container & Image */}
-                        <div className="relative max-w-full max-h-[75vh] flex items-center justify-center p-4">
-                            <img
-                                src={activeImage}
-                                alt={product.name}
-                                onMouseDown={handleMouseDown}
-                                onClick={handleImageClick}
-                                className="max-w-full max-h-[75vh] object-contain select-none transition-transform duration-150 ease-out"
-                                style={{
-                                    transform: `translate(${zoomPosition.x}px, ${zoomPosition.y}px) scale(${zoomScale})`,
-                                    cursor: zoomScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in'
-                                }}
-                                draggable={false}
-                            />
-                        </div>
-
-                        {/* Right Nav Button */}
-                        {allImages.length > 1 && (
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    const currentIndex = allImages.indexOf(activeImage);
-                                    const newIndex = currentIndex === allImages.length - 1 ? 0 : currentIndex + 1;
-                                    setActiveImage(allImages[newIndex]);
-                                    setZoomScale(1);
-                                    setZoomPosition({ x: 0, y: 0 });
-                                }}
-                                className="absolute right-4 z-10 text-white hover:text-orange-400 bg-black/40 hover:bg-black/60 p-3 rounded-full transition-colors focus:outline-none"
-                            >
-                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Bottom Gallery Preview Grid */}
-                    {allImages.length > 1 && (
-                        <div className="w-full bg-black/85 py-4 px-6 flex justify-center gap-2 overflow-x-auto z-10 border-t border-white/5">
-                            {allImages.map((img, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => {
-                                        setActiveImage(img);
-                                        setZoomScale(1);
-                                        setZoomPosition({ x: 0, y: 0 });
-                                    }}
-                                    className={`w-14 h-14 p-0.5 bg-white border-2 rounded-lg overflow-hidden flex items-center justify-center transition-all focus:outline-none ${
-                                        activeImage === img ? 'border-orange-500 ring-2 ring-orange-500/20 opacity-100' : 'border-transparent opacity-50 hover:opacity-100'
-                                    }`}
-                                >
-                                    <img src={img} alt="" className="max-w-full max-h-full object-contain" />
-                                </button>
-                            ))}
-                        </div>
-                    )}
                 </div>
             )}
         </Layout>
