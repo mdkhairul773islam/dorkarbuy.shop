@@ -546,10 +546,10 @@ export default function Layout({ children }) {
                 {notifications.map((notification) => (
                     <div
                         key={notification.id}
-                        className={`flex items-center gap-4 min-w-[340px] max-w-md p-4 rounded-xl shadow-2xl border-2 transform transition-all duration-500 ease-out bg-white ${
+                        className={`flex items-center gap-4 min-w-[340px] max-w-md p-4 rounded-xl shadow-2xl border transform transition-all duration-500 ease-out bg-white ${
                             notification.type === 'success'
-                                ? 'border-green-200'
-                                : 'border-red-200'
+                                ? 'border-orange-200/80 shadow-orange-500/5'
+                                : 'border-rose-200/80 shadow-rose-500/5'
                         }`}
                         style={{
                             animation: 'slideIn 0.3s ease-out'
@@ -558,13 +558,13 @@ export default function Layout({ children }) {
                         {/* Icon */}
                         <div className="shrink-0">
                             {notification.type === 'success' ? (
-                                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/10">
                                     <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                             ) : (
-                                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-rose-500/10">
                                     <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -574,11 +574,7 @@ export default function Layout({ children }) {
 
                         {/* Message */}
                         <div className="flex-1">
-                            <p className={`font-bold text-sm leading-relaxed ${
-                                notification.type === 'success'
-                                    ? 'text-gray-800'
-                                    : 'text-gray-800'
-                            }`}>
+                            <p className="font-bold text-sm leading-relaxed text-slate-800">
                                 {notification.message}
                             </p>
                         </div>
@@ -586,7 +582,7 @@ export default function Layout({ children }) {
                         {/* Close Button */}
                         <button
                             onClick={() => removeNotification(notification.id)}
-                            className="shrink-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1.5 transition-colors"
+                            className="shrink-0 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg p-1.5 transition-colors"
                         >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
