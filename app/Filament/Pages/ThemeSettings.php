@@ -9,6 +9,9 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\EmbeddedSchema;
+use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -23,8 +26,6 @@ class ThemeSettings extends Page implements HasForms
     protected static ?string $title = 'Theme Settings';
 
     protected static ?int $navigationSort = 100;
-
-    protected string $view = 'filament.pages.theme-settings';
 
     public ?array $data = [];
 
@@ -68,6 +69,22 @@ class ThemeSettings extends Page implements HasForms
                             ->default('#0f172a')
                             ->required(),
                     ])->columns(2),
+            ]);
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                Form::make([
+                    EmbeddedSchema::make('form'),
+                ])
+                    ->id('form')
+                    ->livewireSubmitHandler('save')
+                    ->footer([
+                        Actions::make($this->getFormActions())
+                            ->key('form-actions'),
+                    ]),
             ]);
     }
 
