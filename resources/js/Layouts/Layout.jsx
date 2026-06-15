@@ -68,7 +68,7 @@ export default function Layout({ children }) {
                                     <img 
                                         src={settings.site_logo} 
                                         alt={settings.site_name || 'Logo'} 
-                                        className="h-12 w-12 sm:h-16 sm:w-16 sm:object-contain rounded-full border border-gray-100 shadow-sm"
+                                        className="h-10 w-auto sm:h-14 object-contain"
                                     />
                                 ) : (
                                     <div className="flex flex-col">
@@ -321,7 +321,7 @@ export default function Layout({ children }) {
                                     <img 
                                         src={settings.site_logo} 
                                         alt={settings.site_name || 'Logo'} 
-                                        className="h-12 w-auto"
+                                        className="h-12 w-auto bg-white p-1.5 rounded-lg shadow-sm"
                                     />
                                 ) : (
                                     <div>
