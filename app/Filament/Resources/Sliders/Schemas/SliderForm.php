@@ -22,10 +22,12 @@ class SliderForm
                 FileUpload::make('image')
                     ->image()
                     ->imageEditor()
+                    ->imageCropAspectRatio('12:5')
                     ->imageResizeTargetWidth(1920)
+                    ->imageResizeTargetHeight(800)
                     ->disk('public')
                     ->directory('sliders')
-                    ->helperText('Banners are automatically optimized and resized to a max width of 1920px to keep the website fast, while preserving the full original aspect ratio. Use the Edit button if you want to manually crop the image.'),
+                    ->helperText('Slider banners are automatically cropped to a 12:5 aspect ratio and resized to 1920x800 px for optimal speed on desktop, mobile, and tablet. Click the Edit button on the image to adjust the crop area.'),
                 FileUpload::make('video')
                     ->disk('public')
                     ->acceptedFileTypes(['video/mp4', 'video/mkv', 'video/webm'])
