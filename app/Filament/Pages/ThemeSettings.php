@@ -16,7 +16,7 @@ class ThemeSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paint-brush';
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-paint-brush';
 
     protected static ?string $navigationLabel = 'Theme Settings';
 
