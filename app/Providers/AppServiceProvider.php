@@ -17,11 +17,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
+            config(['app.url' => $scheme.'://'.$_SERVER['HTTP_HOST']]);
+        }
     }
 }
