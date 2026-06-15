@@ -59,27 +59,62 @@ graph TD
 
 ### 2. ⚙️ Admin Panel Workflow (Filament)
 
-#### A. Order & Transaction Validation
-- **Path:** `/admin/orders`
-- Admins verify incoming orders, check the provided **Transaction ID** against their merchant statements, and transition the order state:
-  - `Pending` ➡️ `Processing` ➡️ `Completed` / `Cancelled`.
+Admins control the entire store lifecycle through a clean, intuitive Filament v5 backend dashboard. Below is the detailed resource-by-resource workflow:
 
-#### B. Dynamic General Settings
-- **Path:** `/admin/settings`
-- Configure global text/details:
-  - Site name & Bangla Translation.
-  - Merchant logos & Favicons.
-  - Dynamic **Hotline Numbers** shown across the site (Header & Footer).
-  - Individual MFS account numbers (bKash, Nagad, Rocket).
+#### A. Dashboard Analytics & Monitoring
+- **Default Path:** `/admin`
+- **Widgets & Statistics:**
+  - **Total Revenue:** All-time sum of completed payments, formatted in BDT.
+  - **Today Revenue:** Total completed payments processed today, letting admins gauge daily performance.
+  - **Total Orders:** Tracks order volume, displaying a breakdown badge of how many orders are currently `pending` and need immediate validation.
+  - **Completed Orders:** Total number of successfully fulfilled orders.
+  - **Active Products:** Number of products currently active and visible to customers on the frontend.
 
-#### C. Visual Branding Control (Theme Settings)
-- **Path:** `/admin/theme-settings`
-- An admin-friendly, dedicated styling page with color pickers to instantly repaint the website:
-  - **Primary Brand Color:** Changes primary buttons, highlights, tags, and icons (Default: `#ea580c`).
-  - **Hover Color:** Defines interactive hover states for CTA buttons.
-  - **Body Background Color:** Sets main layouts (`bg-slate-50`, body, container panels).
-  - **Primary Text Color:** Controls typography color contrast.
-- All styles compiled dynamically via Tailwind v4 variables and modern CSS `color-mix()` for light background tints (e.g. `orange-50` and `orange-100`).
+#### B. Catalog Management (Categories, Products & Sliders)
+- **Sliders Resource (`/admin/sliders`):**
+  - Admins upload and manage marketing banners for the frontend homepage carousel.
+  - Form attributes include: Title, Subtitle, Banner Image, redirect Link (e.g. to a specific campaign or product), Sort order, and Active status checkbox.
+- **Categories Resource (`/admin/categories`):**
+  - Setup store departments (e.g., academic books, engineering, web development courses).
+  - Form attributes include: Category Title, auto-generated URL Slug, cover Image, Description, and Active toggle.
+- **Products Resource (`/admin/products`):**
+  - Manage books, courses, or physical goods.
+  - Form attributes include: Product Title, Slug, primary Cover Image, detailed Description, Price, Sale Price, Type selector (e.g., `book` or `course`), stock quantity, active status checkbox, and featured toggle.
+  - Items classified under type `course` will exclude image-zooming triggers on the frontend, while other item types enable the zooming modal automatically.
+
+#### C. Customers & Security (Users Management)
+- **Users Resource (`/admin/users`):**
+  - Manage accounts for both system administrators (with panel access) and customer portals.
+  - Form attributes include: Name, Email, Role definition, Password assignment, and Active/Block toggles.
+
+#### D. Sales Operations (Orders & Payments Validation)
+- **Orders Resource (`/admin/orders`):**
+  - List and inspect all purchases made on the frontend.
+  - Details include: Customer contact info (Name, Phone, shipping Address), list of purchased items, subtotal, and selected payment method.
+  - Admins update order progress through state transitions: `Pending` ➡️ `Processing` ➡️ `Completed` (or `Cancelled`).
+- **Payments Resource (`/admin/payments`):**
+  - Records payment transactions submitted by customers.
+  - Fields include: Selected Payment Method (bKash, Nagad, Rocket, COD), payment amount (BDT), customer's sender Phone number, customer-submitted **Transaction ID**, and status dropdown (`pending`, `completed`, `failed`).
+  - **Validation Loop:** Admins verify the Transaction ID against their merchant account statement, then mark the payment as `completed`, which updates the order context.
+
+#### E. General Configuration (Settings & Payment Methods)
+- **Payment Methods Resource (`/admin/payment-methods`):**
+  - Setup payment accounts for MFS.
+  - Admins input/edit the active merchant/agent account numbers for **bKash, Nagad, and Rocket**.
+  - Includes toggles to instantly enable or disable payment methods globally (e.g. disabling Rocket during maintenance, or enabling Cash on Delivery).
+- **Settings Resource (`/admin/settings`):**
+  - Configure global site metadata:
+    - **Branding:** Site Name (English & Bangla Translation), logo, and favicon upload.
+    - **Hotline Support:** Dynamic hotline phone number (e.g., `01914383816`) that dynamically propagates to the frontend Header and Footer, ensuring easy contact updates.
+
+#### F. Branding Styling Control (Theme Settings)
+- **Theme Settings Page (`/admin/theme-settings`):**
+  - A dedicated interface equipped with color pickers that instantly changes the platform's visual identity:
+    - **Primary Brand Color:** Modifies the primary CTA buttons, badges, highlights, and icons (Default: `#ea580c`).
+    - **Hover Color:** Sets the dark hover state for active components (Default: `#c2410c`).
+    - **Body Background Color:** Alters the background of main pages and layouts.
+    - **Primary Text Color:** Sets typography color.
+  - Changes compile instantly via CSS custom properties mapped to Tailwind CSS v4, requiring no manual coding or server recompiles.
 
 ---
 
