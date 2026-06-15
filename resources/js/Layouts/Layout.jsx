@@ -70,9 +70,19 @@ export default function Layout({ children }) {
             <div className="bg-slate-900 text-gray-300 text-[11px] sm:text-xs py-2 px-4 border-b border-slate-800">
                 <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-2">
                     <div className="flex items-center space-x-4">
-                        <span>📞 Hotline: <span className="font-bold text-orange-400">01914383816</span></span>
+                        <span>
+                            📞 Hotline:{" "}
+                            <a href={`tel:${settings?.hotline || '01914383816'}`} className="font-bold text-orange-400 hover:underline">
+                                {settings?.hotline || '01914383816'}
+                            </a>
+                        </span>
                         <span className="hidden md:inline text-slate-700">|</span>
-                        <span className="hidden md:inline">📧 Email: <span className="text-orange-400">info@dorkarbuy.shop</span></span>
+                        <span className="hidden md:inline">
+                            📧 Email:{" "}
+                            <a href={`mailto:${settings?.contact_email || 'info@dorkarbuy.shop'}`} className="text-orange-400 hover:underline">
+                                {settings?.contact_email || 'info@dorkarbuy.shop'}
+                            </a>
+                        </span>
                     </div>
                     <div className="flex items-center space-x-2 font-medium text-orange-400">
                         <span>দরকারবাই — যা দরকার, সব এক জায়গায়</span>
