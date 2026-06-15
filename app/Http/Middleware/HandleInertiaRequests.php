@@ -63,6 +63,10 @@ class HandleInertiaRequests extends Middleware
                 return [
                     'site_name' => Setting::get('site_name', 'DorkarBuy'),
                     'site_name_bangla' => Setting::get('site_name_bangla', 'দরকারবাই'),
+                    'theme_primary_color' => Setting::get('theme_primary_color', '#ea580c'),
+                    'theme_hover_color' => Setting::get('theme_hover_color', '#c2410c'),
+                    'theme_bg_color' => Setting::get('theme_bg_color', '#f8fafc'),
+                    'theme_text_color' => Setting::get('theme_text_color', '#0f172a'),
                     'site_logo' => $site_logo ? asset('storage/'.$site_logo) : null,
                     'site_favicon' => $site_favicon ? asset('storage/'.$site_favicon) : null,
                     'contact_phone' => Setting::get('contact_phone', '01914383816'),

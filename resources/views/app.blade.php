@@ -32,6 +32,16 @@
         /></noscript>
         <!-- End Facebook Pixel Code -->
         @endif
+        
+        <!-- Dynamic Theme Variables -->
+        <style>
+            :root {
+                --theme-primary-color: {{ \App\Models\Setting::get('theme_primary_color', '#ea580c') }};
+                --theme-hover-color: {{ \App\Models\Setting::get('theme_hover_color', '#c2410c') }};
+                --theme-bg-color: {{ \App\Models\Setting::get('theme_bg_color', '#f8fafc') }};
+                --theme-text-color: {{ \App\Models\Setting::get('theme_text_color', '#0f172a') }};
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
         @inertia
