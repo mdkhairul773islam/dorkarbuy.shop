@@ -5,6 +5,17 @@ import Layout from '../Layouts/Layout';
 export default function ProductDetail({ auth, product, fbEventId }) {
     const [activeTab, setActiveTab] = useState('summary');
     const [isLookInsideOpen, setIsLookInsideOpen] = useState(false);
+    const [activeImage, setActiveImage] = useState(null);
+
+    useEffect(() => {
+        if (product.image) {
+            setActiveImage(`/storage/${product.image}`);
+        } else if (product.images && product.images.length > 0) {
+            setActiveImage(`/storage/${product.images[0]}`);
+        } else {
+            setActiveImage(null);
+        }
+    }, [product]);
 
     useEffect(() => {
         if (typeof fbq !== 'undefined' && fbEventId) {
@@ -67,22 +78,22 @@ export default function ProductDetail({ auth, product, fbEventId }) {
             <div className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="lg:grid lg:grid-cols-2 lg:gap-x-10 lg:items-start">
-                        {/* Image */}
-                        <div className="flex flex-col-reverse">
-                            <div className="w-full relative shadow-sm rounded-2xl overflow-hidden bg-white border border-gray-200 p-4">
-                                {product.image ? (
+                        {/* Image & Gallery */}
+                        <div className="flex flex-col">
+                            <div className="w-full relative shadow-sm rounded-2xl overflow-hidden bg-white border border-gray-200 p-4 flex items-center justify-center min-h-[300px] sm:min-h-[450px]">
+                                {activeImage ? (
                                     <div 
-                                        className="relative group cursor-pointer"
-                                        onClick={() => product.look_inside_type && setIsLookInsideOpen(true)}
+                                        className="relative group cursor-pointer w-full flex justify-center"
+                                        onClick={() => product.type === 'book' && product.look_inside_type && setIsLookInsideOpen(true)}
                                     >
                                         <img
-                                            src={`/storage/${product.image}`}
+                                            src={activeImage}
                                             alt={product.name}
-                                            className="w-full h-auto max-h-[500px] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                                            className="w-auto h-auto max-w-full max-h-[450px] object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                                         />
                                         
                                         {/* Look Inside Overlay */}
-                                        {product.look_inside_type && (
+                                        {product.type === 'book' && product.look_inside_type && (
                                             <div className="absolute top-0 inset-x-0 w-full bg-white bg-opacity-95 py-2.5 px-4 shadow text-center transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                                                 <div className="text-orange-600 font-bold flex items-center justify-center space-x-2">
                                                     <span>Look Inside</span>
@@ -92,7 +103,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                                 </div>
                                             </div>
                                         )}
-                                        {product.look_inside_type && (
+                                        {product.type === 'book' && product.look_inside_type && (
                                             <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-md z-10 flex items-center space-x-1 outline outline-1 outline-gray-200">
                                                 <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM9 13H7v-2h2v2zm0-4H7V5h2v4z"/></svg>
                                                 <span className="text-xs font-bold text-gray-700">Look Inside</span>
@@ -105,6 +116,47 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                     </div>
                                 )}
                             </div>
+
+                            {/* Gallery Thumbnails */}
+                            {((product.image && product.images && product.images.length > 0) || (product.images && product.images.length > 1)) && (
+                                <div className="flex flex-wrap gap-2 mt-4 justify-start">
+                                    {product.image && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveImage(`/storage/${product.image}`)}
+                                            className={`w-16 h-16 sm:w-20 sm:h-20 p-1 bg-white border-2 rounded-xl overflow-hidden flex items-center justify-center transition-all ${
+                                                activeImage === `/storage/${product.image}`
+                                                    ? 'border-orange-500 ring-2 ring-orange-500/20'
+                                                    : 'border-gray-200 hover:border-orange-400'
+                                            }`}
+                                        >
+                                            <img
+                                                src={`/storage/${product.image}`}
+                                                alt="Main preview"
+                                                className="max-w-full max-h-full object-contain"
+                                            />
+                                        </button>
+                                    )}
+                                    {product.images && product.images.map((img, index) => (
+                                        <button
+                                            key={index}
+                                            type="button"
+                                            onClick={() => setActiveImage(`/storage/${img}`)}
+                                            className={`w-16 h-16 sm:w-20 sm:h-20 p-1 bg-white border-2 rounded-xl overflow-hidden flex items-center justify-center transition-all ${
+                                                activeImage === `/storage/${img}`
+                                                    ? 'border-orange-500 ring-2 ring-orange-500/20'
+                                                    : 'border-gray-200 hover:border-orange-400'
+                                            }`}
+                                        >
+                                            <img
+                                                src={`/storage/${img}`}
+                                                alt={`Gallery preview ${index + 1}`}
+                                                className="max-w-full max-h-full object-contain"
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* Product info */}
@@ -172,7 +224,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                     {product.stock === 0 ? 'Out of Stock' : 'অর্ডার করুন / Add to Cart'}
                                 </button>
                                 
-                                {product.look_inside_type && (
+                                {product.type === 'book' && product.look_inside_type && (
                                     <button
                                         type="button"
                                         onClick={(e) => {
@@ -254,7 +306,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
             </div>
 
             {/* Look Inside Modal */}
-            {isLookInsideOpen && (
+            {isLookInsideOpen && product.type === 'book' && (
                 <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                     <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                         {/* Background overlay */}

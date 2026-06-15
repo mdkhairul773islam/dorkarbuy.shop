@@ -33,6 +33,7 @@ class ProductForm
                         'digital' => 'Digital Product/Subscription',
                     ])
                     ->default('book')
+                    ->reactive()
                     ->required(),
                 Textarea::make('description')
                     ->default(null)
@@ -76,7 +77,8 @@ class ProductForm
                     ])
                     ->collapsible()
                     ->collapsed(true)
-                    ->columns(1),
+                    ->columns(1)
+                    ->visible(fn ($get) => $get('type') === 'book'),
 
                 TextInput::make('price')
                     ->required()
@@ -111,9 +113,17 @@ class ProductForm
                     ->getUploadedFileNameForStorageUsing(
                         fn ($file) => 'products/'.$file->hashName()
                     ),
-                Textarea::make('images')
-                    ->default(null)
-                    ->columnSpanFull(),
+                FileUpload::make('images')
+                    ->multiple()
+                    ->image()
+                    ->disk('public')
+                    ->visibility('public')
+                    ->directory('products/gallery')
+                    ->getUploadedFileNameForStorageUsing(
+                        fn ($file) => 'products/gallery/'.$file->hashName()
+                    )
+                    ->columnSpanFull()
+                    ->label('Product Gallery Images'),
                 TextInput::make('stock')
                     ->required()
                     ->numeric()
