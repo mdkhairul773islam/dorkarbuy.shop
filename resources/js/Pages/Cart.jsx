@@ -86,6 +86,11 @@ export default function Cart({ auth, cart }) {
                                                     <p className="mt-1 text-sm text-gray-500 capitalize">
                                                         {item.product?.type}
                                                     </p>
+                                                    {item.size && (
+                                                        <p className="mt-1.5 text-sm">
+                                                            <span className="font-semibold text-gray-600 bg-gray-100 rounded-md px-2.5 py-0.5 border border-gray-200">Size: {item.size}</span>
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <div className="flex-1 flex items-end justify-between text-sm">
                                                     <div className="flex items-center gap-3">

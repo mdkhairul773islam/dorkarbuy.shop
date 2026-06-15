@@ -105,6 +105,7 @@ class CheckoutController extends Controller
                     'price' => $item->price,
                     'quantity' => $item->quantity,
                     'total' => $item->price * $item->quantity,
+                    'size' => $item->size,
                 ]);
 
                 // Update product stock

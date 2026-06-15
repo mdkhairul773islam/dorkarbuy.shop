@@ -244,7 +244,12 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 <h4 className="text-sm font-medium text-gray-900">
                                                     {item.product?.name}
                                                 </h4>
-                                                <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                                                <div className="flex flex-wrap gap-2 mt-1">
+                                                    <span className="text-xs text-gray-500 bg-white border border-gray-200 rounded px-1.5 py-0.5">Qty: {item.quantity}</span>
+                                                    {item.size && (
+                                                        <span className="text-xs font-semibold text-gray-600 bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5">Size: {item.size}</span>
+                                                    )}
+                                                </div>
                                             </div>
                                             <p className="text-sm font-medium text-gray-900">
                                                 ৳{(parseFloat(item.price) * item.quantity).toFixed(2)}

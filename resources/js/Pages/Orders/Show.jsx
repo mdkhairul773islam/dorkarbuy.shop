@@ -124,6 +124,11 @@ export default function ShowOrder({ auth, order }) {
                                                         <p className="text-sm text-gray-500 capitalize">
                                                             {item.product_type}
                                                         </p>
+                                                        {item.size && (
+                                                            <p className="mt-1 text-sm">
+                                                                <span className="font-semibold text-gray-600 bg-gray-100 rounded px-2 py-0.5 border border-gray-200">Size: {item.size}</span>
+                                                            </p>
+                                                        )}
                                                         <p className="text-sm text-gray-500">
                                                             Quantity: {item.quantity}
                                                         </p>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -55,6 +56,37 @@ class OrderForm
                     ->columnSpanFull(),
                 Textarea::make('notes')
                     ->default(null)
+                    ->columnSpanFull(),
+
+                Repeater::make('items')
+                    ->relationship('items')
+                    ->schema([
+                        TextInput::make('product_name')
+                            ->disabled()
+                            ->label('Product Name'),
+                        TextInput::make('size')
+                            ->disabled()
+                            ->label('Size'),
+                        TextInput::make('price')
+                            ->disabled()
+                            ->numeric()
+                            ->prefix('৳')
+                            ->label('Price'),
+                        TextInput::make('quantity')
+                            ->disabled()
+                            ->numeric()
+                            ->label('Qty'),
+                        TextInput::make('total')
+                            ->disabled()
+                            ->numeric()
+                            ->prefix('৳')
+                            ->label('Total'),
+                    ])
+                    ->columns(5)
+                    ->disabled()
+                    ->deletable(false)
+                    ->addable(false)
+                    ->label('Ordered Items')
                     ->columnSpanFull(),
             ]);
     }

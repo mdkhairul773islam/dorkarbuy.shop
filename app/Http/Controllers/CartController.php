@@ -26,6 +26,7 @@ class CartController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'integer|min:1',
+            'size' => 'nullable|string|max:50',
         ]);
 
         $product = Product::findOrFail($request->product_id);
@@ -37,7 +38,10 @@ class CartController extends Controller
 
         $cart = $this->getOrCreateCart();
 
-        $cartItem = $cart->items()->where('product_id', $product->id)->first();
+        $cartItem = $cart->items()
+            ->where('product_id', $product->id)
+            ->where('size', $request->size)
+            ->first();
 
         if ($cartItem) {
             $cartItem->quantity += $quantity;
@@ -49,6 +53,7 @@ class CartController extends Controller
                 'product_id' => $product->id,
                 'quantity' => $quantity,
                 'price' => $product->final_price,
+                'size' => $request->size,
             ]);
         }
 

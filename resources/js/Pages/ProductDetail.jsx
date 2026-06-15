@@ -29,10 +29,27 @@ export default function ProductDetail({ auth, product, fbEventId }) {
         }
     }, [fbEventId]);
 
-    const { post, processing } = useForm({
+    const sizes = product.duration ? product.duration.split(',').map(s => s.trim()) : [];
+    const [selectedSize, setSelectedSize] = useState(null);
+
+    useEffect(() => {
+        const productSizes = product.duration ? product.duration.split(',').map(s => s.trim()) : [];
+        if (product.type === 'clothing' && productSizes.length > 0) {
+            setSelectedSize(productSizes[0]);
+        } else {
+            setSelectedSize(null);
+        }
+    }, [product]);
+
+    const { data, setData, post, processing } = useForm({
         product_id: product.id,
         quantity: 1,
+        size: null,
     });
+
+    useEffect(() => {
+        setData('size', selectedSize);
+    }, [selectedSize]);
 
     const addToCart = (e) => {
         e.preventDefault();
@@ -201,7 +218,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                         <span className="text-sm font-bold text-gray-900">{product.author}</span>
                                     </div>
                                 )}
-                                {product.duration && (
+                                {product.duration && product.type !== 'clothing' && (
                                     <div className="flex items-center">
                                         <span className="text-sm font-bold text-gray-500 mr-2">{getDurationLabel(product.type)}:</span>
                                         <span className="text-sm font-bold text-gray-900">{product.duration}</span>
@@ -214,6 +231,29 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                     </span>
                                 </div>
                             </div>
+
+                            {/* Size Selector for Clothing */}
+                            {product.type === 'clothing' && sizes.length > 0 && (
+                                <div className="mt-6 border-t border-gray-100 pt-6">
+                                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Select Size</h3>
+                                    <div className="grid grid-cols-4 gap-3 mt-3">
+                                        {sizes.map((size) => (
+                                            <button
+                                                key={size}
+                                                type="button"
+                                                onClick={() => setSelectedSize(size)}
+                                                className={`flex items-center justify-center rounded-xl py-3 px-4 text-sm font-bold uppercase transition-all duration-200 border-2 ${
+                                                    selectedSize === size
+                                                        ? 'bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-500/20'
+                                                        : 'bg-white border-gray-200 text-gray-900 hover:border-orange-500'
+                                                }`}
+                                            >
+                                                {size}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <form onSubmit={addToCart} className="mt-8 flex gap-4">
                                 <button
