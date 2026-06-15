@@ -120,10 +120,10 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                                                         <img 
                                                             src={`/storage/${slider.image}`} 
                                                             alt="Slider Banner" 
-                                                            className="w-full h-auto block" 
+                                                            className="w-full h-[220px] sm:h-auto object-cover block"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-[300px] sm:h-[400px] bg-slate-900" />
+                                                        <div className="w-full h-[220px] sm:h-[400px] bg-slate-900" />
                                                     )}
                                                 </Link>
                                             ) : (
@@ -137,10 +137,10 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                                                     <img 
                                                         src={`/storage/${slider.image}`} 
                                                         alt="Slider Banner" 
-                                                        className="w-full h-auto block" 
+                                                        className="w-full h-[220px] sm:h-auto object-cover block"
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-[300px] sm:h-[400px] bg-slate-900" />
+                                                    <div className="w-full h-[220px] sm:h-[400px] bg-slate-900" />
                                                 )
                                             )}
                                         </div>
