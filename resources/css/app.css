@@ -34,7 +34,7 @@ body {
     50% { transform: translateY(-3px); }
 }
 .tagline-shimmer {
-    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 30%, #a855f7 50%, #7c3aed 70%, #4f46e5 100%);
+    background: linear-gradient(90deg, #ea580c 0%, #f97316 30%, #facc15 50%, #f97316 70%, #ea580c 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

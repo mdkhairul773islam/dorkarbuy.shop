@@ -16,11 +16,11 @@ class SettingSeeder extends Seeder
             // General
             ['key' => 'site_name', 'value' => 'DorkarBuy', 'type' => 'text', 'group' => 'general'],
             ['key' => 'site_name_bangla', 'value' => 'দরকারবাই', 'type' => 'text', 'group' => 'general'],
-            ['key' => 'site_tagline', 'value' => 'আপনার প্রয়োজন, আমাদের অঙ্গীকার', 'type' => 'text', 'group' => 'general'],
-            ['key' => 'site_description', 'value' => 'দরকারবাই - আপনার পছন্দের বই এবং কোর্স অনলাইন শপ', 'type' => 'textarea', 'group' => 'general'],
+            ['key' => 'site_tagline', 'value' => 'যা দরকার, সব এক জায়গায়', 'type' => 'text', 'group' => 'general'],
+            ['key' => 'site_description', 'value' => 'দরকারবাই - আপনার পছন্দের বই এবং কোর্স online shop', 'type' => 'textarea', 'group' => 'general'],
 
             // Appearance
-            ['key' => 'site_logo', 'value' => null, 'type' => 'image', 'group' => 'appearance'],
+            ['key' => 'site_logo', 'value' => 'logo.jpg', 'type' => 'image', 'group' => 'appearance'],
             ['key' => 'site_favicon', 'value' => null, 'type' => 'image', 'group' => 'appearance'],
 
             // Contact

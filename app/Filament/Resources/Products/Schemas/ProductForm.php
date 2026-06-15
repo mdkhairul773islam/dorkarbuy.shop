@@ -25,7 +25,13 @@ class ProductForm
                 TextInput::make('slug')
                     ->required(),
                 Select::make('type')
-                    ->options(['book' => 'Book', 'course' => 'Course'])
+                    ->options([
+                        'book' => 'Book',
+                        'course' => 'Course',
+                        'clothing' => 'Clothing',
+                        'electronics' => 'Electronics',
+                        'digital' => 'Digital Product/Subscription',
+                    ])
                     ->default('book')
                     ->required(),
                 Textarea::make('description')

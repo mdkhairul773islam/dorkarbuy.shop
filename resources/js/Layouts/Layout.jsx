@@ -68,11 +68,11 @@ export default function Layout({ children }) {
                                     <img 
                                         src={settings.site_logo} 
                                         alt={settings.site_name || 'Logo'} 
-                                        className="h-10 w-auto sm:h-20 sm:object-contain drop-shadow-sm"
+                                        className="h-12 w-12 sm:h-16 sm:w-16 sm:object-contain rounded-full border border-gray-100 shadow-sm"
                                     />
                                 ) : (
                                     <div className="flex flex-col">
-                                        <span className="text-xl font-bold text-indigo-600 sm:text-2xl">
+                                        <span className="text-xl font-bold text-orange-600 sm:text-2xl">
                                             {settings?.site_name || 'DorkarBuy'}
                                         </span>
                                         {settings?.site_name_bangla && (
@@ -83,30 +83,36 @@ export default function Layout({ children }) {
                                     </div>
                                 )}
                             </Link>
-                            <div className="hidden sm:flex sm:space-x-8 sm:ml-32 lg:ml-40">
-                                <Link href="/" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-900 hover:text-indigo-600 transition-colors">
+                            <div className="hidden sm:flex sm:space-x-6 sm:ml-28 lg:ml-36">
+                                <Link href="/" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-900 hover:text-orange-600 transition-colors">
                                     Home
                                 </Link>
-                                <Link href="/products" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-indigo-600 transition-colors">
-                                    Products
+                                <Link href="/products" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
+                                    All Products
                                 </Link>
-                                <Link href="/products?type=book" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-indigo-600 transition-colors">
+                                <Link href="/products?type=clothing" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
+                                    Clothing
+                                </Link>
+                                <Link href="/products?type=electronics" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
+                                    Electronics
+                                </Link>
+                                <Link href="/products?type=book" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
                                     Books
                                 </Link>
-                                {/* <Link href="/products?type=course" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-indigo-600 transition-colors">
+                                <Link href="/products?type=course" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
                                     Courses
-                                </Link> */}
+                                </Link>
                             </div>
                         </div>
                         <div className="hidden sm:flex items-center justify-center flex-1 px-4">
                                 <div className="tagline-float relative group cursor-default select-none">
-                                    <div className="tagline-glow absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 rounded-2xl blur-md"></div>
-                                    <div className="relative flex flex-col items-center px-5 py-2 bg-white rounded-2xl border border-indigo-100 shadow-md">
+                                    <div className="tagline-glow absolute -inset-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 rounded-2xl blur-md"></div>
+                                    <div className="relative flex flex-col items-center px-5 py-2 bg-white rounded-2xl border border-orange-100 shadow-md">
                                         <span className="tagline-shimmer text-sm font-extrabold tracking-wide">
                                             দরকারবাই
                                         </span>
-                                        <span className="text-[10px] font-semibold text-purple-500 tracking-widest mt-0.5">
-                                            আপনার প্রয়োজন, আমাদের অঙ্গীকার
+                                        <span className="text-[10px] font-bold text-orange-500 tracking-wider mt-0.5">
+                                            যা দরকার, সব এক জায়গায়
                                         </span>
                                     </div>
                                 </div>
@@ -114,10 +120,10 @@ export default function Layout({ children }) {
                         <div className="flex items-center space-x-4">
                             {/* Mobile hamburger button */}
                             <button
-                                className="sm:hidden p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 focus:outline-none transition-colors"
+                                className="sm:hidden p-2 rounded-md text-gray-600 hover:text-orange-600 hover:bg-orange-50 focus:outline-none transition-colors"
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 aria-label="Toggle menu"
-                            >
+                             >
                                 {mobileMenuOpen ? (
                                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -133,7 +139,7 @@ export default function Layout({ children }) {
                                     <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
                                 {cartItemsCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                    <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
                                         {cartItemsCount}
                                     </span>
                                 )}
@@ -198,7 +204,7 @@ export default function Layout({ children }) {
                                     </Link>
                                     <Link 
                                         href="/register" 
-                                        className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700"
+                                        className="bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-700 transition-colors"
                                     >
                                         Sign Up
                                     </Link>
@@ -210,9 +216,9 @@ export default function Layout({ children }) {
             </nav>
 
             {/* Mobile tagline banner */}
-            <div className="sm:hidden w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 py-2 shadow-sm">
+            <div className="sm:hidden w-full bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 py-2 shadow-sm">
                 <p className="text-center text-white text-xs font-bold tracking-wide">
-                    ✨ দরকারবাই &nbsp;—&nbsp; আপনার প্রয়োজন, আমাদের অঙ্গীকার ✨
+                    ✨ দরকারবাই &nbsp;—&nbsp; যা দরকার, সব এক জায়গায় ✨
                 </p>
             </div>
 
@@ -222,44 +228,64 @@ export default function Layout({ children }) {
                     <div className="px-4 pt-2 pb-4 space-y-1">
                         <Link
                             href="/"
-                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors"
+                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            <svg className="w-5 h-5 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                             Home
                         </Link>
                         <Link
                             href="/products"
-                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors"
+                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            <svg className="w-5 h-5 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
-                            Products
+                            All Products
+                        </Link>
+                        <Link
+                            href="/products?type=clothing"
+                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                            Clothing
+                        </Link>
+                        <Link
+                            href="/products?type=electronics"
+                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Electronics
                         </Link>
                         <Link
                             href="/products?type=book"
-                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors"
+                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            <svg className="w-5 h-5 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                             Books
                         </Link>
-                        {/* <Link
+                        <Link
                             href="/products?type=course"
-                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-colors"
+                            className="flex items-center px-3 py-3 text-base font-semibold text-gray-800 hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(false)}
                         >
-                            <svg className="w-5 h-5 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
                             </svg>
                             Courses
-                        </Link> */}
+                        </Link>
                         {!auth?.user && (
                             <div className="pt-2 border-t border-gray-100 flex gap-3">
                                 <Link
@@ -355,8 +381,10 @@ export default function Layout({ children }) {
                         <div>
                             <h4 className="text-white font-bold mb-4">Products</h4>
                             <ul className="space-y-2 text-sm">
-                                <li><Link href="/products?type=book" className="hover:text-white transition">Books</Link></li>
-                                <li><Link href="/products?type=course" className="hover:text-white transition">Courses</Link></li>
+                                <li><Link href="/products?type=clothing" className="hover:text-white transition">Clothing & Fashion</Link></li>
+                                <li><Link href="/products?type=electronics" className="hover:text-white transition">Electronics & Gadgets</Link></li>
+                                <li><Link href="/products?type=book" className="hover:text-white transition">Books & Publications</Link></li>
+                                <li><Link href="/products?type=course" className="hover:text-white transition">Courses & Digital</Link></li>
                                 <li><Link href="/products" className="hover:text-white transition">All Products</Link></li>
                             </ul>
                             
