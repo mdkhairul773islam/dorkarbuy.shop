@@ -18,7 +18,8 @@ class SlidersTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                ImageColumn::make('image'),
+                ImageColumn::make('image')
+                    ->disk('public'),
                 TextColumn::make('video')
                     ->searchable(),
                 TextColumn::make('button_text')
