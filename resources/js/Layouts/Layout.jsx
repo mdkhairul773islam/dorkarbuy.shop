@@ -1,12 +1,19 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { useEffect, useState, useRef } from 'react';
 
 export default function Layout({ children }) {
     const { auth, flash, cartItemsCount, settings } = usePage().props;
+    const { url } = usePage();
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const userMenuRef = useRef(null);
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        router.get('/products', { search: searchQuery });
+    };
 
     useEffect(() => {
         if (flash.success) {
@@ -59,103 +66,119 @@ export default function Layout({ children }) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <nav className="bg-white shadow-sm">
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 sm:h-20">
-                        <div className="flex">
-                            <Link href="/" className="flex items-center sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:left-6 lg:left-8 sm:z-10">
+            {/* Top Bar Ribbon */}
+            <div className="bg-slate-900 text-gray-300 text-[11px] sm:text-xs py-2 px-4 border-b border-slate-800">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-2">
+                    <div className="flex items-center space-x-4">
+                        <span>📞 Hotline: <span className="font-bold text-orange-400">01914383816</span></span>
+                        <span className="hidden md:inline text-slate-700">|</span>
+                        <span className="hidden md:inline">📧 Email: <span className="text-orange-400">info@dorkarbuy.shop</span></span>
+                    </div>
+                    <div className="flex items-center space-x-2 font-medium text-orange-400">
+                        <span>দরকারবাই — যা দরকার, সব এক জায়গায়</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Header */}
+            <header className="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+                        {/* Logo and Controls Row */}
+                        <div className="w-full md:w-auto flex items-center justify-between">
+                            <Link href="/" className="flex items-center">
                                 {settings?.site_logo ? (
                                     <img 
                                         src={settings.site_logo} 
                                         alt={settings.site_name || 'Logo'} 
-                                        className="h-10 w-auto sm:h-14 object-contain"
+                                        className="h-9 sm:h-12 w-auto object-contain"
                                     />
                                 ) : (
                                     <div className="flex flex-col">
-                                        <span className="text-xl font-bold text-orange-600 sm:text-2xl">
-                                            {settings?.site_name || 'DorkarBuy'}
+                                        <span className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                                            Dorkar<span className="text-orange-600">Buy</span>
                                         </span>
-                                        {settings?.site_name_bangla && (
-                                            <span className="text-xs text-gray-600 sm:text-sm">
-                                                {settings.site_name_bangla}
-                                            </span>
-                                        )}
                                     </div>
                                 )}
                             </Link>
-                            <div className="hidden sm:flex sm:space-x-6 sm:ml-28 lg:ml-36">
-                                <Link href="/" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-900 hover:text-orange-600 transition-colors">
-                                    Home
+                            
+                            {/* Mobile actions and Hamburger */}
+                            <div className="flex items-center space-x-2 md:hidden">
+                                <Link href="/cart" className="relative text-slate-700 p-2 hover:bg-slate-50 rounded-full transition-colors">
+                                    <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    {cartItemsCount > 0 && (
+                                        <span className="absolute top-1 right-1 bg-orange-600 text-white text-[9px] rounded-full h-4.5 w-4.5 flex items-center justify-center font-bold">
+                                            {cartItemsCount}
+                                        </span>
+                                    )}
                                 </Link>
-                                <Link href="/products" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                                    All Products
-                                </Link>
-                                <Link href="/products?type=clothing" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                                    Clothing
-                                </Link>
-                                <Link href="/products?type=electronics" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                                    Electronics
-                                </Link>
-                                <Link href="/products?type=book" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                                    Books
-                                </Link>
-                                <Link href="/products?type=course" className="inline-flex items-center px-1 pt-1 text-base font-semibold text-gray-500 hover:text-orange-600 transition-colors">
-                                    Courses
-                                </Link>
+                                <button
+                                    className="p-2 rounded-md text-slate-700 hover:text-orange-600 hover:bg-orange-50 focus:outline-none transition-colors"
+                                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                    aria-label="Toggle menu"
+                                >
+                                    {mobileMenuOpen ? (
+                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    ) : (
+                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                                        </svg>
+                                    )}
+                                </button>
                             </div>
                         </div>
-                        <div className="hidden sm:flex items-center justify-center flex-1 px-4">
-                                <div className="tagline-float relative group cursor-default select-none">
-                                    <div className="tagline-glow absolute -inset-1 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 rounded-2xl blur-md"></div>
-                                    <div className="relative flex flex-col items-center px-5 py-2 bg-white rounded-2xl border border-orange-100 shadow-md">
-                                        <span className="tagline-shimmer text-sm font-extrabold tracking-wide">
-                                            দরকারবাই
-                                        </span>
-                                        <span className="text-[10px] font-bold text-orange-500 tracking-wider mt-0.5">
-                                            যা দরকার, সব এক জায়গায়
-                                        </span>
-                                    </div>
-                                </div>
+
+                        {/* Search Bar - Center */}
+                        <form onSubmit={handleSearchSubmit} className="w-full md:max-w-md lg:max-w-xl flex-1">
+                            <div className="relative flex items-center">
+                                <input
+                                    type="text"
+                                    placeholder="বই, পোশাক, ইলেকট্রনিক্স বা কোর্স খুঁজুন..."
+                                    className="w-full pl-4 pr-24 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:bg-white transition-all shadow-inner"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                <button
+                                    type="submit"
+                                    className="absolute right-1 top-1 bottom-1 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-4 rounded-md flex items-center space-x-1 transition-colors"
+                                >
+                                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <span>Search</span>
+                                </button>
                             </div>
-                        <div className="flex items-center space-x-4">
-                            {/* Mobile hamburger button */}
-                            <button
-                                className="sm:hidden p-2 rounded-md text-gray-600 hover:text-orange-600 hover:bg-orange-50 focus:outline-none transition-colors"
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                aria-label="Toggle menu"
-                             >
-                                {mobileMenuOpen ? (
-                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                ) : (
-                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                                    </svg>
-                                )}
-                            </button>
-                            <Link href="/cart" className="relative text-gray-500 hover:text-gray-900">
-                                <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                        </form>
+
+                        {/* Desktop actions - Right */}
+                        <div className="hidden md:flex items-center space-x-4">
+                            <Link href="/cart" className="relative text-slate-700 hover:text-orange-600 p-2 hover:bg-orange-50 rounded-full transition-colors">
+                                <svg className="h-6.5 w-6.5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                                     <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
                                 {cartItemsCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                                    <span className="absolute top-0.5 right-0.5 bg-orange-600 text-white text-[9px] rounded-full h-4.5 w-4.5 flex items-center justify-center font-bold">
                                         {cartItemsCount}
                                     </span>
                                 )}
                             </Link>
+
                             {auth?.user ? (
                                 <div className="relative" ref={userMenuRef}>
                                     <button
                                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                        className="flex items-center space-x-2 text-gray-500 hover:text-gray-900 focus:outline-none"
+                                        className="flex items-center space-x-1.5 text-slate-700 hover:text-orange-600 focus:outline-none py-1.5 px-3 hover:bg-slate-50 rounded-lg transition-colors"
                                     >
-                                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        <svg className="h-5.5 w-5.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
-                                        <span className="text-sm font-medium">{auth.user.name}</span>
-                                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        <span className="text-sm font-semibold">{auth.user.name}</span>
+                                        <svg className="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                                         </svg>
                                     </button>
                                     
@@ -198,13 +221,13 @@ export default function Layout({ children }) {
                                     )}
                                 </div>
                             ) : (
-                                <div className="flex items-center space-x-4">
-                                    <Link href="/login" className="text-gray-500 hover:text-gray-900">
+                                <div className="flex items-center space-x-2">
+                                    <Link href="/login" className="text-sm font-semibold text-slate-700 hover:text-orange-600 py-1.5 px-3 transition-colors">
                                         Login
                                     </Link>
                                     <Link 
                                         href="/register" 
-                                        className="bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-orange-700 transition-colors"
+                                        className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-700 transition-all shadow-sm active:scale-95"
                                     >
                                         Sign Up
                                     </Link>
@@ -213,14 +236,51 @@ export default function Layout({ children }) {
                         </div>
                     </div>
                 </div>
-            </nav>
 
-            {/* Mobile tagline banner */}
-            <div className="sm:hidden w-full bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 py-2 shadow-sm">
-                <p className="text-center text-white text-xs font-bold tracking-wide">
-                    ✨ দরকারবাই &nbsp;—&nbsp; যা দরকার, সব এক জায়গায় ✨
-                </p>
-            </div>
+                {/* Desktop Categories Menu Bar */}
+                <div className="hidden md:block bg-slate-900 border-t border-slate-800">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex items-center space-x-8 h-11">
+                            <Link 
+                                href="/" 
+                                className={`text-xs sm:text-sm font-bold transition-colors ${url === '/' ? 'text-orange-400' : 'text-gray-100 hover:text-orange-400'}`}
+                            >
+                                Home
+                            </Link>
+                            <Link 
+                                href="/products" 
+                                className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products' ? 'text-orange-400 font-bold' : 'text-gray-100 hover:text-orange-400'}`}
+                            >
+                                All Products
+                            </Link>
+                            <Link 
+                                href="/products?type=clothing" 
+                                className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=clothing' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
+                            >
+                                Clothing
+                            </Link>
+                            <Link 
+                                href="/products?type=electronics" 
+                                className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=electronics' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
+                            >
+                                Electronics
+                            </Link>
+                            <Link 
+                                href="/products?type=book" 
+                                className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=book' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
+                            >
+                                Books
+                            </Link>
+                            <Link 
+                                href="/products?type=course" 
+                                className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=course' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
+                            >
+                                Courses
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
             {/* Mobile Menu Drawer */}
             {mobileMenuOpen && (
@@ -290,14 +350,14 @@ export default function Layout({ children }) {
                             <div className="pt-2 border-t border-gray-100 flex gap-3">
                                 <Link
                                     href="/login"
-                                    className="flex-1 text-center py-2.5 text-base font-semibold text-indigo-600 border border-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors"
+                                    className="flex-1 text-center py-2.5 text-base font-semibold text-orange-600 border border-orange-600 rounded-lg hover:bg-orange-50 transition-colors"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     href="/register"
-                                    className="flex-1 text-center py-2.5 text-base font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors"
+                                    className="flex-1 text-center py-2.5 text-base font-semibold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Sign Up
