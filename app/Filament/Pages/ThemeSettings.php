@@ -5,12 +5,12 @@ namespace App\Filament\Pages;
 use App\Models\Setting;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ThemeSettings extends Page implements HasForms
 {
@@ -38,10 +38,11 @@ class ThemeSettings extends Page implements HasForms
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->statePath('data')
+            ->components([
                 Section::make('Brand Colors')
                     ->description('Manage primary actions and hover colors for buttons, tags, and highlights.')
                     ->schema([
@@ -67,8 +68,7 @@ class ThemeSettings extends Page implements HasForms
                             ->default('#0f172a')
                             ->required(),
                     ])->columns(2),
-            ])
-            ->statePath('data');
+            ]);
     }
 
     protected function getFormActions(): array
