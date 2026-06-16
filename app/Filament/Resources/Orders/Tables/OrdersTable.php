@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Tables;
 
 use App\Mail\OrderDigitalProductMail;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -13,6 +14,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Mail;
 
 class OrdersTable
@@ -284,6 +286,50 @@ class OrdersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('bulk_processing')
+                        ->label('Mark Selected as Processing')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('info')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records): void {
+                            $records->each->update(['status' => 'processing']);
+
+                            Notification::make()
+                                ->title('Selected orders marked as processing')
+                                ->success()
+                                ->send();
+                        }),
+                    BulkAction::make('bulk_completed')
+                        ->label('Mark Selected as Completed')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records): void {
+                            $records->each->update(['status' => 'completed']);
+
+                            Notification::make()
+                                ->title('Selected orders marked as completed')
+                                ->success()
+                                ->send();
+                        }),
+                    BulkAction::make('bulk_cancel')
+                        ->label('Cancel Selected Orders')
+                        ->icon('heroicon-o-x-mark')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records): void {
+                            $records->each(function ($record) {
+                                $record->update(['status' => 'cancelled']);
+                                if ($record->payment && $record->payment->status === 'pending') {
+                                    $record->payment->update(['status' => 'failed']);
+                                }
+                            });
+
+                            Notification::make()
+                                ->title('Selected orders cancelled successfully')
+                                ->danger()
+                                ->send();
+                        }),
                     DeleteBulkAction::make(),
                 ]),
             ]);
