@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Tables;
 
 use App\Mail\OrderDigitalProductMail;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -122,94 +123,18 @@ class OrdersTable
                     ]),
             ])
             ->recordActions([
-                Action::make('send_email')
-                    ->label(fn ($record) => $record->digital_sent_at ? 'Resend Email' : 'Send Email')
-                    ->icon('heroicon-o-envelope')
-                    ->color(fn ($record) => $record->digital_sent_at ? 'gray' : 'primary')
-                    ->requiresConfirmation()
-                    ->modalHeading(fn ($record) => 'Send Digital File to '.$record->customer_name)
-                    ->modalDescription(fn ($record) => 'This will send the PDF file(s) to '.$record->customer_email.'.')
-                    ->modalSubmitActionLabel('Send Now')
-                    ->action(function ($record): void {
-                        $record->load('items.product');
+                ActionGroup::make([
+                    Action::make('send_email')
+                        ->label(fn ($record) => $record->digital_sent_at ? 'Resend Email' : 'Send Email')
+                        ->icon('heroicon-o-envelope')
+                        ->color(fn ($record) => $record->digital_sent_at ? 'gray' : 'primary')
+                        ->requiresConfirmation()
+                        ->modalHeading(fn ($record) => 'Send Digital File to '.$record->customer_name)
+                        ->modalDescription(fn ($record) => 'This will send the PDF file(s) to '.$record->customer_email.'.')
+                        ->modalSubmitActionLabel('Send Now')
+                        ->action(function ($record): void {
+                            $record->load('items.product');
 
-                        try {
-                            Mail::to($record->customer_email)
-                                ->send(new OrderDigitalProductMail($record));
-
-                            $record->update(['digital_sent_at' => now()]);
-
-                            Notification::make()
-                                ->title('Email sent successfully!')
-                                ->success()
-                                ->send();
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->title('Failed to send email')
-                                ->body($e->getMessage())
-                                ->danger()
-                                ->send();
-                        }
-                    })
-                    ->visible(fn ($record): bool => filled($record->customer_email)
-                        && $record->payment?->status === 'completed'
-                        && $record->items->some(
-                            fn ($item) => $item->product && $item->product->digital_file
-                        )),
-                Action::make('whatsapp')
-                    ->label('WhatsApp')
-                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
-                    ->color('success')
-                    ->url(function ($record): string {
-                        $phone = preg_replace('/\D/', '', $record->customer_phone);
-                        if (str_starts_with($phone, '0') && strlen($phone) === 11) {
-                            $phone = '880'.substr($phone, 1);
-                        }
-
-                        $productList = $record->items->map(
-                            fn ($item) => '• '.$item->product_name.' (x'.$item->quantity.')'
-                        )->implode("\n");
-
-                        $message = "প্রিয় স্যার/ম্যাডাম,\n\n"
-                        ."অর্ডার নম্বর: *{$record->order_number}*\n\n"
-                        ."আপনার ক্রয়কৃত পণ্যসমূহ:\n{$productList}\n\n"
-                        .'মোট মূল্য: *৳'.number_format($record->total, 2)."*\n\n"
-                        ."─────────────────────\n\n"
-                        ."আপনার ডিজিটাল ফাইল(গুলো) আপনার ইমেইলে পাঠানো হয়েছে।\n"
-                        ."ইমেইল: {$record->customer_email}\n\n"
-                        ."দয়া করে আপনার *Inbox* চেক করুন।\n"
-                        ."যদি ইমেইল না পান তাহলে *Spam/Junk* ফোল্ডার চেক করুন।\n\n"
-                        ."─────────────────────\n\n"
-                        .'আমাদের সাথে কেনাকাটা করার জন্য আপনাকে ধন্যবাদ!';
-
-                        return 'https://wa.me/'.$phone.'?text='.rawurlencode($message);
-                    })
-                    ->openUrlInNewTab()
-                    ->visible(fn ($record): bool => filled($record->customer_phone)),
-                Action::make('verify_payment')
-                    ->label('Verify Payment')
-                    ->icon('heroicon-o-check-badge')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Verify and Approve Payment')
-                    ->modalDescription(fn ($record) => "This will mark the payment for Order #{$record->order_number} as Completed, change order status, and dispatch digital downloads if applicable.")
-                    ->action(function ($record): void {
-                        $record->load('payment', 'items.product');
-
-                        if ($record->payment) {
-                            $record->payment->update([
-                                'status' => 'completed',
-                                'paid_at' => now(),
-                            ]);
-                        }
-
-                        $hasPhysical = $record->items->some(fn ($item) => ! $item->product || ! $item->product->digital_file);
-                        $newStatus = $hasPhysical ? 'processing' : 'completed';
-
-                        $record->update(['status' => $newStatus]);
-
-                        $hasDigital = $record->items->some(fn ($item) => $item->product && $item->product->digital_file);
-                        if ($hasDigital && filled($record->customer_email)) {
                             try {
                                 Mail::to($record->customer_email)
                                     ->send(new OrderDigitalProductMail($record));
@@ -217,72 +142,153 @@ class OrdersTable
                                 $record->update(['digital_sent_at' => now()]);
 
                                 Notification::make()
-                                    ->title('Payment verified & digital files emailed!')
+                                    ->title('Email sent successfully!')
                                     ->success()
                                     ->send();
                             } catch (\Exception $e) {
                                 Notification::make()
-                                    ->title('Payment verified, but email delivery failed')
+                                    ->title('Failed to send email')
                                     ->body($e->getMessage())
-                                    ->warning()
+                                    ->danger()
                                     ->send();
                             }
-                        } else {
+                        })
+                        ->visible(fn ($record): bool => filled($record->customer_email)
+                            && $record->payment?->status === 'completed'
+                            && $record->items->some(
+                                fn ($item) => $item->product && $item->product->digital_file
+                            )),
+                    Action::make('whatsapp')
+                        ->label('WhatsApp')
+                        ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                        ->color('success')
+                        ->url(function ($record): string {
+                            $phone = preg_replace('/\D/', '', $record->customer_phone);
+                            if (str_starts_with($phone, '0') && strlen($phone) === 11) {
+                                $phone = '880'.substr($phone, 1);
+                            }
+
+                            $productList = $record->items->map(
+                                fn ($item) => '• '.$item->product_name.' (x'.$item->quantity.')'
+                            )->implode("\n");
+
+                            $message = "প্রিয় স্যার/ম্যাডাম,\n\n"
+                            ."অর্ডার নম্বর: *{$record->order_number}*\n\n"
+                            ."আপনার ক্রয়কৃত পণ্যসমূহ:\n{$productList}\n\n"
+                            .'মোট মূল্য: *৳'.number_format($record->total, 2)."*\n\n"
+                            ."─────────────────────\n\n"
+                            ."আপনার ডিজিটাল ফাইল(গুলো) আপনার ইমেইলে পাঠানো হয়েছে।\n"
+                            ."ইমেইল: {$record->customer_email}\n\n"
+                            ."দয়া করে আপনার *Inbox* চেক করুন।\n"
+                            ."যদি ইমেইল না পান তাহলে *Spam/Junk* ফোল্ডার চেক করুন।\n\n"
+                            ."─────────────────────\n\n"
+                            .'আমাদের সাথে কেনাকাটা করার জন্য আপনাকে ধন্যবাদ!';
+
+                            return 'https://wa.me/'.$phone.'?text='.rawurlencode($message);
+                        })
+                        ->openUrlInNewTab()
+                        ->visible(fn ($record): bool => filled($record->customer_phone)),
+                    Action::make('verify_payment')
+                        ->label('Verify Payment')
+                        ->icon('heroicon-o-check-badge')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Verify and Approve Payment')
+                        ->modalDescription(fn ($record) => "This will mark the payment for Order #{$record->order_number} as Completed, change order status, and dispatch digital downloads if applicable.")
+                        ->action(function ($record): void {
+                            $record->load('payment', 'items.product');
+
+                            if ($record->payment) {
+                                $record->payment->update([
+                                    'status' => 'completed',
+                                    'paid_at' => now(),
+                                ]);
+                            }
+
+                            $hasPhysical = $record->items->some(fn ($item) => ! $item->product || ! $item->product->digital_file);
+                            $newStatus = $hasPhysical ? 'processing' : 'completed';
+
+                            $record->update(['status' => $newStatus]);
+
+                            $hasDigital = $record->items->some(fn ($item) => $item->product && $item->product->digital_file);
+                            if ($hasDigital && filled($record->customer_email)) {
+                                try {
+                                    Mail::to($record->customer_email)
+                                        ->send(new OrderDigitalProductMail($record));
+
+                                    $record->update(['digital_sent_at' => now()]);
+
+                                    Notification::make()
+                                        ->title('Payment verified & digital files emailed!')
+                                        ->success()
+                                        ->send();
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->title('Payment verified, but email delivery failed')
+                                        ->body($e->getMessage())
+                                        ->warning()
+                                        ->send();
+                                }
+                            } else {
+                                Notification::make()
+                                    ->title('Payment verified successfully!')
+                                    ->success()
+                                    ->send();
+                            }
+                        })
+                        ->visible(fn ($record): bool => $record->payment && $record->payment->status === 'pending'),
+                    Action::make('mark_processing')
+                        ->label('Mark Processing')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('info')
+                        ->action(function ($record): void {
+                            $record->update(['status' => 'processing']);
+
                             Notification::make()
-                                ->title('Payment verified successfully!')
+                                ->title('Order marked as processing')
                                 ->success()
                                 ->send();
-                        }
-                    })
-                    ->visible(fn ($record): bool => $record->payment && $record->payment->status === 'pending'),
-                Action::make('mark_processing')
-                    ->label('Mark Processing')
-                    ->icon('heroicon-o-arrow-path')
-                    ->color('info')
-                    ->action(function ($record): void {
-                        $record->update(['status' => 'processing']);
+                        })
+                        ->visible(fn ($record): bool => $record->status === 'pending'),
+                    Action::make('mark_completed')
+                        ->label('Mark Completed')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->action(function ($record): void {
+                            $record->update(['status' => 'completed']);
 
-                        Notification::make()
-                            ->title('Order marked as processing')
-                            ->success()
-                            ->send();
-                    })
-                    ->visible(fn ($record): bool => $record->status === 'pending'),
-                Action::make('mark_completed')
-                    ->label('Mark Completed')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->action(function ($record): void {
-                        $record->update(['status' => 'completed']);
+                            Notification::make()
+                                ->title('Order marked as completed')
+                                ->success()
+                                ->send();
+                        })
+                        ->visible(fn ($record): bool => in_array($record->status, ['pending', 'processing'])),
+                    Action::make('cancel_order')
+                        ->label('Cancel Order')
+                        ->icon('heroicon-o-x-mark')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Cancel Order')
+                        ->modalDescription(fn ($record) => "Are you sure you want to cancel Order #{$record->order_number}?")
+                        ->action(function ($record): void {
+                            $record->update(['status' => 'cancelled']);
 
-                        Notification::make()
-                            ->title('Order marked as completed')
-                            ->success()
-                            ->send();
-                    })
-                    ->visible(fn ($record): bool => in_array($record->status, ['pending', 'processing'])),
-                Action::make('cancel_order')
-                    ->label('Cancel Order')
-                    ->icon('heroicon-o-x-mark')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->modalHeading('Cancel Order')
-                    ->modalDescription(fn ($record) => "Are you sure you want to cancel Order #{$record->order_number}?")
-                    ->action(function ($record): void {
-                        $record->update(['status' => 'cancelled']);
+                            if ($record->payment && $record->payment->status === 'pending') {
+                                $record->payment->update(['status' => 'failed']);
+                            }
 
-                        if ($record->payment && $record->payment->status === 'pending') {
-                            $record->payment->update(['status' => 'failed']);
-                        }
-
-                        Notification::make()
-                            ->title('Order cancelled successfully')
-                            ->danger()
-                            ->send();
-                    })
-                    ->visible(fn ($record): bool => $record->status !== 'cancelled'),
-                ViewAction::make(),
-                EditAction::make(),
+                            Notification::make()
+                                ->title('Order cancelled successfully')
+                                ->danger()
+                                ->send();
+                        })
+                        ->visible(fn ($record): bool => $record->status !== 'cancelled'),
+                    ViewAction::make(),
+                    EditAction::make(),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions')
+                    ->color('gray'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
