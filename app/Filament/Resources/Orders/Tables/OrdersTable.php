@@ -32,7 +32,7 @@ class OrdersTable
                 TextColumn::make('user.name')
                     ->searchable()
                     ->label('User')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('customer_name')
                     ->searchable()
@@ -72,7 +72,7 @@ class OrdersTable
                         'cash' => 'Cash',
                         default => ucfirst($state),
                     })
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('total')
                     ->money('BDT')
