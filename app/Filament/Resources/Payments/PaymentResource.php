@@ -7,6 +7,7 @@ use App\Mail\OrderDigitalProductMail;
 use App\Models\Payment;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -243,45 +244,50 @@ class PaymentResource extends Resource
                     ]),
             ])
             ->recordActions([
-                Action::make('approve_payment')
-                    ->label('Approve')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Approve Payment')
-                    ->modalDescription(fn (Payment $record) => 'Are you sure you want to approve the payment of BDT '.number_format($record->amount, 2)." for Order #{$record->order?->order_number}?")
-                    ->action(function (Payment $record): void {
-                        $record->update([
-                            'status' => 'completed',
-                            'paid_at' => now(),
-                        ]);
+                ActionGroup::make([
+                    Action::make('approve_payment')
+                        ->label('Approve')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Approve Payment')
+                        ->modalDescription(fn (Payment $record) => 'Are you sure you want to approve the payment of BDT '.number_format($record->amount, 2)." for Order #{$record->order?->order_number}?")
+                        ->action(function (Payment $record): void {
+                            $record->update([
+                                'status' => 'completed',
+                                'paid_at' => now(),
+                            ]);
 
-                        if ($record->order) {
-                            $hasPhysical = $record->order->items->some(fn ($item) => ! $item->product || ! $item->product->digital_file);
-                            $newStatus = $hasPhysical ? 'processing' : 'completed';
-                            $record->order->update(['status' => $newStatus]);
+                            if ($record->order) {
+                                $hasPhysical = $record->order->items->some(fn ($item) => ! $item->product || ! $item->product->digital_file);
+                                $newStatus = $hasPhysical ? 'processing' : 'completed';
+                                $record->order->update(['status' => $newStatus]);
 
-                            $hasDigital = $record->order->items->some(fn ($item) => $item->product && $item->product->digital_file);
-                            if ($hasDigital && filled($record->order->customer_email)) {
-                                try {
-                                    Mail::to($record->order->customer_email)
-                                        ->send(new OrderDigitalProductMail($record->order));
+                                $hasDigital = $record->order->items->some(fn ($item) => $item->product && $item->product->digital_file);
+                                if ($hasDigital && filled($record->order->customer_email)) {
+                                    try {
+                                        Mail::to($record->order->customer_email)
+                                            ->send(new OrderDigitalProductMail($record->order));
 
-                                    $record->order->update(['digital_sent_at' => now()]);
-                                } catch (\Exception $e) {
-                                    // Handle email failure silently or log
+                                        $record->order->update(['digital_sent_at' => now()]);
+                                    } catch (\Exception $e) {
+                                        // Handle email failure silently or log
+                                    }
                                 }
                             }
-                        }
 
-                        Notification::make()
-                            ->title('Payment approved successfully')
-                            ->success()
-                            ->send();
-                    })
-                    ->visible(fn (Payment $record): bool => $record->status === 'pending'),
-                ViewAction::make(),
-                EditAction::make(),
+                            Notification::make()
+                                ->title('Payment approved successfully')
+                                ->success()
+                                ->send();
+                        })
+                        ->visible(fn (Payment $record): bool => $record->status === 'pending'),
+                    ViewAction::make(),
+                    EditAction::make(),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions')
+                    ->color('gray'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
