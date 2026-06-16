@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import Layout from '../Layouts/Layout';
+import ProductCard from '../Components/ProductCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -14,28 +15,6 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
         if (s.includes('book') || s.includes('novel') || s.includes('read') || s.includes('publication')) return '📚';
         if (s.includes('course') || s.includes('digital') || s.includes('sub') || s.includes('learn') || s.includes('tutorial')) return '💻';
         return '🛍️';
-    };
-
-    const getTypeLabel = (type) => {
-        switch (type) {
-            case 'clothing': return 'Clothing & Fashion';
-            case 'electronics': return 'Electronics & Gadgets';
-            case 'book': return 'Book';
-            case 'course': return 'Course/Tutorial';
-            case 'digital': return 'Digital Product';
-            default: return type || 'Product';
-        }
-    };
-
-    const getTypeColor = (type) => {
-        switch (type) {
-            case 'clothing': return 'bg-amber-100 text-amber-800 border-amber-200';
-            case 'electronics': return 'bg-blue-100 text-blue-800 border-blue-200';
-            case 'book': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-            case 'course': return 'bg-purple-100 text-purple-800 border-purple-200';
-            case 'digital': return 'bg-rose-100 text-rose-800 border-rose-200';
-            default: return 'bg-gray-100 text-gray-800 border-gray-200';
-        }
     };
 
     return (
@@ -242,89 +221,7 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
 
                     <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
                         {featuredProducts?.map((product) => (
-                            <div key={product.id} className="group relative bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-200 transition-all flex flex-col h-full">
-                                <div className="w-full relative bg-gray-100 aspect-square overflow-hidden shrink-0">
-                                    <Link href={`/products/${product.slug}`}>
-                                        {product.image ? (
-                                            <img
-                                                src={`/storage/${product.image}`}
-                                                alt={product.name}
-                                                className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                                                <span className="text-gray-500">No image</span>
-                                            </div>
-                                        )}
-                                    </Link>
-                                    {/* Discount Badge */}
-                                    {product.discount_price && product.show_discount_badge && (
-                                        <div className="absolute top-3 right-3 z-10">
-                                            <span className="bg-red-500 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm">
-                                                {product.discount_type === 'flat' 
-                                                    ? `৳${parseFloat(product.discount_price).toFixed(0)} OFF`
-                                                    : `${Math.round(parseFloat(product.discount_price))}% OFF`
-                                                }
-                                            </span>
-                                        </div>
-                                    )}
-                                    {/* Quick Buy Button Overlay */}
-                                    <button
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            window.location.href = `/products/${product.slug}`;
-                                        }}
-                                        className="absolute bottom-3 right-3 bg-orange-600 text-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-orange-700 z-10"
-                                        title="View Details"
-                                    >
-                                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                
-                                <div className="p-5 flex flex-col flex-1">
-                                    {/* Product Type Tag */}
-                                    <span className={`inline-block self-start px-2 py-0.5 rounded-full text-xs font-bold border ${getTypeColor(product.type)} mb-2.5`}>
-                                        {getTypeLabel(product.type)}
-                                    </span>
-                                    
-                                    <Link href={`/products/${product.slug}`} className="flex-1">
-                                        <h3 className="text-base font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 leading-snug">
-                                            {product.name}
-                                        </h3>
-                                        {product.author && (
-                                            <p className="text-xs text-gray-500 mt-1 italic">By {product.author}</p>
-                                        )}
-                                    </Link>
-
-                                    <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
-                                        <div className="flex flex-col">
-                                            <span className="text-xl font-extrabold text-gray-950">
-                                                ৳{product.discount_price 
-                                                    ? (product.discount_type === 'flat' 
-                                                        ? (parseFloat(product.price) - parseFloat(product.discount_price)).toFixed(2)
-                                                        : (parseFloat(product.price) * (1 - parseFloat(product.discount_price) / 100)).toFixed(2)
-                                                      )
-                                                    : parseFloat(product.price).toFixed(2)
-                                                }
-                                            </span>
-                                            {product.discount_price && (
-                                                <span className="text-xs text-gray-400 line-through">
-                                                    ৳{parseFloat(product.price).toFixed(2)}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        <Link 
-                                            href={`/products/${product.slug}`}
-                                            className="px-4 py-2 bg-orange-50 text-orange-700 text-xs font-bold rounded-xl hover:bg-orange-600 hover:text-white transition-colors"
-                                        >
-                                            অর্ডার করুন
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 </div>
