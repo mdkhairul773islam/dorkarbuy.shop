@@ -1,20 +1,20 @@
 {
-  "_Layout-DIJlaYLg.js": {
-    "file": "assets/Layout-DIJlaYLg.js",
+  "_Layout-BC6I45ZA.js": {
+    "file": "assets/Layout-BC6I45ZA.js",
     "name": "Layout",
     "imports": [
       "resources/js/app.jsx"
     ]
   },
-  "_ProductCard-BVaiP4MZ.js": {
-    "file": "assets/ProductCard-BVaiP4MZ.js",
+  "_ProductCard-0SF3Edzk.js": {
+    "file": "assets/ProductCard-0SF3Edzk.js",
     "name": "ProductCard",
     "imports": [
       "resources/js/app.jsx"
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-B4q5vT7W.css",
+    "file": "assets/app-BZqcU1eY.css",
     "name": "app",
     "names": [
       "app.css"
@@ -23,142 +23,142 @@
     "isEntry": true
   },
   "resources/js/Pages/Auth/Login.jsx": {
-    "file": "assets/Login-rjodQfnH.js",
+    "file": "assets/Login-DAeoHdgd.js",
     "name": "Login",
     "src": "resources/js/Pages/Auth/Login.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Auth/Profile.jsx": {
-    "file": "assets/Profile-_GMFga5X.js",
+    "file": "assets/Profile-Boo4Fm-X.js",
     "name": "Profile",
     "src": "resources/js/Pages/Auth/Profile.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Auth/Register.jsx": {
-    "file": "assets/Register-B3yC093P.js",
+    "file": "assets/Register-CeKXSnBj.js",
     "name": "Register",
     "src": "resources/js/Pages/Auth/Register.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Cart.jsx": {
-    "file": "assets/Cart-DTn69Mj1.js",
+    "file": "assets/Cart-BP1lF3eC.js",
     "name": "Cart",
     "src": "resources/js/Pages/Cart.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Checkout.jsx": {
-    "file": "assets/Checkout-CZdE6YkZ.js",
+    "file": "assets/Checkout-CpasmMGt.js",
     "name": "Checkout",
     "src": "resources/js/Pages/Checkout.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Dashboard.jsx": {
-    "file": "assets/Dashboard-Bpv9uOVz.js",
+    "file": "assets/Dashboard-D7dge2HR.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Home.jsx": {
-    "file": "assets/Home-CdQ6b5rB.js",
+    "file": "assets/Home-CxvxvSHh.js",
     "name": "Home",
     "src": "resources/js/Pages/Home.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js",
-      "_ProductCard-BVaiP4MZ.js"
+      "_Layout-BC6I45ZA.js",
+      "_ProductCard-0SF3Edzk.js"
     ],
     "css": [
       "assets/Home-BHCwELWW.css"
     ]
   },
   "resources/js/Pages/Orders/Index.jsx": {
-    "file": "assets/Index-C6q8i_U8.js",
+    "file": "assets/Index-DympVwX2.js",
     "name": "Index",
     "src": "resources/js/Pages/Orders/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Orders/Show.jsx": {
-    "file": "assets/Show-Cg0dAH2E.js",
+    "file": "assets/Show-ovJMWWol.js",
     "name": "Show",
     "src": "resources/js/Pages/Orders/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Page.jsx": {
-    "file": "assets/Page-Qjp5YcpT.js",
+    "file": "assets/Page-B53EBuCE.js",
     "name": "Page",
     "src": "resources/js/Pages/Page.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Payment.jsx": {
-    "file": "assets/Payment-BT8ZcIBT.js",
+    "file": "assets/Payment-Beuf5jkG.js",
     "name": "Payment",
     "src": "resources/js/Pages/Payment.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/ProductDetail.jsx": {
-    "file": "assets/ProductDetail-CMLHoT-G.js",
+    "file": "assets/ProductDetail-B_I68y3n.js",
     "name": "ProductDetail",
     "src": "resources/js/Pages/ProductDetail.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js"
+      "_Layout-BC6I45ZA.js"
     ]
   },
   "resources/js/Pages/Products.jsx": {
-    "file": "assets/Products-DjOxYV-A.js",
+    "file": "assets/Products-zJTgoU0a.js",
     "name": "Products",
     "src": "resources/js/Pages/Products.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_Layout-DIJlaYLg.js",
-      "_ProductCard-BVaiP4MZ.js"
+      "_Layout-BC6I45ZA.js",
+      "_ProductCard-0SF3Edzk.js"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-C-faKjlf.js",
+    "file": "assets/app-DnBGOt6k.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
@@ -178,7 +178,7 @@
       "resources/js/Pages/Products.jsx"
     ],
     "css": [
-      "assets/app-B4q5vT7W.css"
+      "assets/app-BZqcU1eY.css"
     ]
   }
 }
