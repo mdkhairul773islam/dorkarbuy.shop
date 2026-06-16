@@ -116,6 +116,7 @@ class SettingResource extends Resource
                 TextColumn::make('value')
                     ->label('Value')
                     ->limit(60)
+                    ->tooltip(fn ($state) => $state)
                     ->searchable()
                     ->placeholder('(empty)')
                     ->wrap()

@@ -184,7 +184,9 @@ class PaymentResource extends Resource
 
                 TextColumn::make('order.customer_name')
                     ->searchable()
-                    ->label('Customer'),
+                    ->label('Customer')
+                    ->limit(25)
+                    ->tooltip(fn ($state) => $state),
 
                 TextColumn::make('payment_method')
                     ->badge()

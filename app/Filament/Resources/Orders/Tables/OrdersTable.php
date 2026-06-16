@@ -37,7 +37,9 @@ class OrdersTable
 
                 TextColumn::make('customer_name')
                     ->searchable()
-                    ->label('Customer'),
+                    ->label('Customer')
+                    ->limit(25)
+                    ->tooltip(fn ($state) => $state),
 
                 TextColumn::make('status')
                     ->badge()

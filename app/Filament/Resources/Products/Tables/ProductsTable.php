@@ -22,7 +22,9 @@ class ProductsTable
                 TextColumn::make('category.name')
                     ->searchable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(40)
+                    ->tooltip(fn ($state) => $state),
                 TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
