@@ -184,6 +184,101 @@ class OrdersTable
                     })
                     ->openUrlInNewTab()
                     ->visible(fn ($record): bool => filled($record->customer_phone)),
+                Action::make('verify_payment')
+                    ->label('Verify Payment')
+                    ->icon('heroicon-o-check-badge')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Verify and Approve Payment')
+                    ->modalDescription(fn ($record) => "This will mark the payment for Order #{$record->order_number} as Completed, change order status, and dispatch digital downloads if applicable.")
+                    ->action(function ($record): void {
+                        $record->load('payment', 'items.product');
+
+                        if ($record->payment) {
+                            $record->payment->update([
+                                'status' => 'completed',
+                                'paid_at' => now(),
+                            ]);
+                        }
+
+                        $hasPhysical = $record->items->some(fn ($item) => ! $item->product || ! $item->product->digital_file);
+                        $newStatus = $hasPhysical ? 'processing' : 'completed';
+
+                        $record->update(['status' => $newStatus]);
+
+                        $hasDigital = $record->items->some(fn ($item) => $item->product && $item->product->digital_file);
+                        if ($hasDigital && filled($record->customer_email)) {
+                            try {
+                                Mail::to($record->customer_email)
+                                    ->send(new OrderDigitalProductMail($record));
+
+                                $record->update(['digital_sent_at' => now()]);
+
+                                Notification::make()
+                                    ->title('Payment verified & digital files emailed!')
+                                    ->success()
+                                    ->send();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title('Payment verified, but email delivery failed')
+                                    ->body($e->getMessage())
+                                    ->warning()
+                                    ->send();
+                            }
+                        } else {
+                            Notification::make()
+                                ->title('Payment verified successfully!')
+                                ->success()
+                                ->send();
+                        }
+                    })
+                    ->visible(fn ($record): bool => $record->payment && $record->payment->status === 'pending'),
+                Action::make('mark_processing')
+                    ->label('Mark Processing')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('info')
+                    ->action(function ($record): void {
+                        $record->update(['status' => 'processing']);
+
+                        Notification::make()
+                            ->title('Order marked as processing')
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn ($record): bool => $record->status === 'pending'),
+                Action::make('mark_completed')
+                    ->label('Mark Completed')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(function ($record): void {
+                        $record->update(['status' => 'completed']);
+
+                        Notification::make()
+                            ->title('Order marked as completed')
+                            ->success()
+                            ->send();
+                    })
+                    ->visible(fn ($record): bool => in_array($record->status, ['pending', 'processing'])),
+                Action::make('cancel_order')
+                    ->label('Cancel Order')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Cancel Order')
+                    ->modalDescription(fn ($record) => "Are you sure you want to cancel Order #{$record->order_number}?")
+                    ->action(function ($record): void {
+                        $record->update(['status' => 'cancelled']);
+
+                        if ($record->payment && $record->payment->status === 'pending') {
+                            $record->payment->update(['status' => 'failed']);
+                        }
+
+                        Notification::make()
+                            ->title('Order cancelled successfully')
+                            ->danger()
+                            ->send();
+                    })
+                    ->visible(fn ($record): bool => $record->status !== 'cancelled'),
                 ViewAction::make(),
                 EditAction::make(),
             ])
