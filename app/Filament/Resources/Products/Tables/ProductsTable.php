@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class ProductsTable
@@ -39,10 +40,8 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('duration')
                     ->searchable(),
-                IconColumn::make('is_featured')
-                    ->boolean(),
-                IconColumn::make('is_active')
-                    ->boolean(),
+                ToggleColumn::make('is_featured'),
+                ToggleColumn::make('is_active'),
                 IconColumn::make('digital_file')
                     ->label('Digital File')
                     ->icon(fn ($state) => $state ? 'heroicon-o-document-text' : 'heroicon-o-minus')
