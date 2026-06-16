@@ -149,7 +149,8 @@ class OrdersTable
                                 ->send();
                         }
                     })
-                    ->visible(fn ($record): bool => $record->payment?->status === 'completed'
+                    ->visible(fn ($record): bool => filled($record->customer_email)
+                        && $record->payment?->status === 'completed'
                         && $record->items->some(
                             fn ($item) => $item->product && $item->product->digital_file
                         )),
