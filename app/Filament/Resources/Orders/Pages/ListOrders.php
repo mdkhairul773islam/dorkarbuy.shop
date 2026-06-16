@@ -44,6 +44,10 @@ class ListOrders extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->whereHas('items.product', fn (Builder $q) => $q->whereNotNull('digital_file')))
                 ->badge(static::getResource()::getModel()::whereHas('items.product', fn (Builder $q) => $q->whereNotNull('digital_file'))->count())
                 ->badgeColor('primary'),
+            'cancelled' => Tab::make('Cancelled')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'cancelled'))
+                ->badge(static::getResource()::getModel()::where('status', 'cancelled')->count())
+                ->badgeColor('danger'),
         ];
     }
 }
