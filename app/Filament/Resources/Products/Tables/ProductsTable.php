@@ -22,9 +22,11 @@ class ProductsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('type')
-                    ->badge(),
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('price')
                     ->money('BDT')
                     ->sortable(),
@@ -37,16 +39,19 @@ class ProductsTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('author')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('duration')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 ToggleColumn::make('is_featured'),
                 ToggleColumn::make('is_active'),
                 IconColumn::make('digital_file')
                     ->label('Digital File')
                     ->icon(fn ($state) => $state ? 'heroicon-o-document-text' : 'heroicon-o-minus')
                     ->color(fn ($state) => $state ? 'success' : 'gray')
-                    ->tooltip(fn ($record) => $record->digital_file ? 'PDF uploaded' : 'No digital file'),
+                    ->tooltip(fn ($record) => $record->digital_file ? 'PDF uploaded' : 'No digital file')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
