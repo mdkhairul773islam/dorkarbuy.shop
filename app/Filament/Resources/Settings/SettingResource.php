@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Settings;
 
 use App\Models\Setting;
 use BackedEnum;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -162,32 +163,37 @@ class SettingResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make()
-                    ->mutateRecordDataUsing(function (array $data): array {
-                        $type = $data['type'] ?? 'text';
-                        if (in_array($type, ['text', 'email', 'phone'])) {
-                            $data['value_text'] = $data['value'] ?? null;
-                        } else {
-                            $data['value_'.$type] = $data['value'] ?? null;
-                        }
+                ActionGroup::make([
+                    EditAction::make()
+                        ->mutateRecordDataUsing(function (array $data): array {
+                            $type = $data['type'] ?? 'text';
+                            if (in_array($type, ['text', 'email', 'phone'])) {
+                                $data['value_text'] = $data['value'] ?? null;
+                            } else {
+                                $data['value_'.$type] = $data['value'] ?? null;
+                            }
 
-                        return $data;
-                    })
-                    ->mutateFormDataUsing(function (array $data): array {
-                        $type = $data['type'] ?? 'text';
-                        if (in_array($type, ['text', 'email', 'phone'])) {
-                            $value = $data['value_text'] ?? null;
-                        } else {
-                            $value = $data['value_'.$type] ?? null;
-                        }
-                        $data['value'] = $value;
-                        unset($data['value_text'], $data['value_textarea'], $data['value_richtext'], $data['value_image']);
+                            return $data;
+                        })
+                        ->mutateFormDataUsing(function (array $data): array {
+                            $type = $data['type'] ?? 'text';
+                            if (in_array($type, ['text', 'email', 'phone'])) {
+                                $value = $data['value_text'] ?? null;
+                            } else {
+                                $value = $data['value_'.$type] ?? null;
+                            }
+                            $data['value'] = $value;
+                            unset($data['value_text'], $data['value_textarea'], $data['value_richtext'], $data['value_image']);
 
-                        return $data;
-                    })
-                    ->after(fn () => Setting::clearCache()),
-                DeleteAction::make()
-                    ->after(fn () => Setting::clearCache()),
+                            return $data;
+                        })
+                        ->after(fn () => Setting::clearCache()),
+                    DeleteAction::make()
+                        ->after(fn () => Setting::clearCache()),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions')
+                    ->color('gray'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

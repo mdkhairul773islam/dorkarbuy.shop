@@ -2,13 +2,15 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class ProductsTable
@@ -44,8 +46,14 @@ class ProductsTable
                 TextColumn::make('duration')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                ToggleColumn::make('is_featured'),
-                ToggleColumn::make('is_active'),
+                IconColumn::make('is_featured')
+                    ->label('Featured')
+                    ->icon(fn ($state) => $state ? 'heroicon-s-star' : 'heroicon-o-star')
+                    ->color(fn ($state) => $state ? 'warning' : 'gray'),
+                IconColumn::make('is_active')
+                    ->label('Active')
+                    ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->color(fn ($state) => $state ? 'success' : 'gray'),
                 IconColumn::make('digital_file')
                     ->label('Digital File')
                     ->icon(fn ($state) => $state ? 'heroicon-o-document-text' : 'heroicon-o-minus')
@@ -65,7 +73,34 @@ class ProductsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    Action::make('toggle_featured')
+                        ->label(fn ($record) => $record->is_featured ? 'Remove Featured' : 'Make Featured')
+                        ->icon(fn ($record) => $record->is_featured ? 'heroicon-o-star' : 'heroicon-s-star')
+                        ->color('warning')
+                        ->action(function ($record) {
+                            $record->update(['is_featured' => ! $record->is_featured]);
+                            Notification::make()
+                                ->title($record->is_featured ? 'Product marked as featured' : 'Product removed from featured')
+                                ->success()
+                                ->send();
+                        }),
+                    Action::make('toggle_active')
+                        ->label(fn ($record) => $record->is_active ? 'Deactivate Product' : 'Activate Product')
+                        ->icon(fn ($record) => $record->is_active ? 'heroicon-o-eye-slash' : 'heroicon-o-eye')
+                        ->color(fn ($record) => $record->is_active ? 'danger' : 'success')
+                        ->action(function ($record) {
+                            $record->update(['is_active' => ! $record->is_active]);
+                            Notification::make()
+                                ->title($record->is_active ? 'Product activated successfully' : 'Product deactivated successfully')
+                                ->success()
+                                ->send();
+                        }),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions')
+                    ->color('gray'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
