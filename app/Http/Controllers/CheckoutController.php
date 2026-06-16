@@ -49,12 +49,15 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
+        $activeMethods = PaymentMethod::active()->pluck('code')->toArray();
+        $allowedMethods = array_unique(array_merge($activeMethods, ['bkash', 'rocket', 'nagad', 'cash']));
+
         $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
+            'customer_email' => 'nullable|email|max:255',
             'customer_phone' => 'required|string|max:20',
             'customer_address' => 'nullable|string',
-            'payment_method' => 'required|in:bkash,rocket,nagad,cash',
+            'payment_method' => 'required|string|in:'.implode(',', $allowedMethods),
             'notes' => 'nullable|string',
         ]);
 
@@ -79,6 +82,8 @@ class CheckoutController extends Controller
                 return $item->price * $item->quantity;
             });
 
+            $email = $request->customer_email ?: $request->customer_phone.'@dorkarbuy.shop';
+
             // Create order
             $order = Order::create([
                 'user_id' => Auth::guard('web')->id(),
@@ -89,7 +94,7 @@ class CheckoutController extends Controller
                 'discount' => 0,
                 'total' => $subtotal,
                 'customer_name' => $request->customer_name,
-                'customer_email' => $request->customer_email,
+                'customer_email' => $email,
                 'customer_phone' => $request->customer_phone,
                 'customer_address' => $request->customer_address,
                 'notes' => $request->notes,

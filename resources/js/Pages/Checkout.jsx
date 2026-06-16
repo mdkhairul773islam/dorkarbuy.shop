@@ -16,6 +16,19 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
         return sum + (parseFloat(item.price) * item.quantity);
     }, 0) || 0;
 
+    // Load saved checkout details from local storage on mount
+    useEffect(() => {
+        const savedName = localStorage.getItem('checkout_customer_name');
+        const savedEmail = localStorage.getItem('checkout_customer_email');
+        const savedPhone = localStorage.getItem('checkout_customer_phone');
+        const savedAddress = localStorage.getItem('checkout_customer_address');
+
+        if (savedName) setData('customer_name', savedName);
+        if (savedEmail) setData('customer_email', savedEmail);
+        if (savedPhone) setData('customer_phone', savedPhone);
+        if (savedAddress) setData('customer_address', savedAddress);
+    }, []);
+
     useEffect(() => {
         if (typeof fbq !== 'undefined' && fbEventId) {
             fbq('track', 'InitiateCheckout', {
@@ -30,6 +43,11 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        // Save checkout details to local storage
+        localStorage.setItem('checkout_customer_name', data.customer_name);
+        localStorage.setItem('checkout_customer_email', data.customer_email || '');
+        localStorage.setItem('checkout_customer_phone', data.customer_phone);
+        localStorage.setItem('checkout_customer_address', data.customer_address || '');
         post('/checkout');
     };
 
@@ -83,7 +101,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                     {/* Email */}
                                     <div>
                                         <label htmlFor="customer_email" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Email Address
+                                            Email Address <span className="text-slate-400 text-xs font-normal">(ঐচ্ছিক / Optional)</span>
                                         </label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -98,7 +116,6 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 onChange={(e) => setData('customer_email', e.target.value)}
                                                 className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm"
                                                 placeholder="you@example.com"
-                                                required
                                             />
                                         </div>
                                         {errors.customer_email && (
@@ -176,34 +193,66 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
 
                                     {/* Payment Method */}
                                     <div>
-                                        <label htmlFor="payment_method" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Payment Method
+                                        <label className="block text-sm font-semibold text-slate-700 mb-3">
+                                            পেমেন্ট পদ্ধতি সিলেক্ট করুন / Select Payment Method
                                         </label>
-                                        <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                                <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                                </svg>
-                                            </div>
-                                            <select
-                                                id="payment_method"
-                                                value={data.payment_method}
-                                                onChange={(e) => setData('payment_method', e.target.value)}
-                                                className="block w-full pl-11 pr-10 py-3 border border-slate-200 rounded-xl leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm appearance-none cursor-pointer"
-                                                required
-                                            >
-                                                {paymentMethods?.map((method) => (
-                                                    <option key={method.id} value={method.code}>
-                                                        {method.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            <div className="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
-                                                <svg className="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                                </svg>
-                                            </div>
+                                        
+                                        <div className="grid grid-cols-2 gap-3.5">
+                                            {paymentMethods?.map((method) => {
+                                                const isSelected = data.payment_method === method.code;
+                                                let cardStyles = "border-slate-200 hover:border-slate-300 bg-white";
+                                                let dotStyles = "border-slate-300";
+                                                let badgeStyles = "text-slate-500 bg-slate-100";
+                                                
+                                                if (isSelected) {
+                                                    dotStyles = "border-orange-500 bg-orange-500 ring-2 ring-orange-500/20";
+                                                    if (method.code === 'bkash') {
+                                                        cardStyles = "border-pink-500 bg-pink-50/20 ring-1 ring-pink-500 shadow-sm shadow-pink-500/5";
+                                                        badgeStyles = "text-pink-700 bg-pink-100/60";
+                                                    } else if (method.code === 'nagad') {
+                                                        cardStyles = "border-orange-500 bg-orange-50/20 ring-1 ring-orange-500 shadow-sm shadow-orange-500/5";
+                                                        badgeStyles = "text-orange-700 bg-orange-100/60";
+                                                    } else if (method.code === 'rocket') {
+                                                        cardStyles = "border-purple-500 bg-purple-50/20 ring-1 ring-purple-500 shadow-sm shadow-purple-550/5";
+                                                        badgeStyles = "text-purple-700 bg-purple-100/60";
+                                                    } else if (method.code === 'upay') {
+                                                        cardStyles = "border-amber-500 bg-amber-50/20 ring-1 ring-amber-500 shadow-sm shadow-amber-550/5";
+                                                        badgeStyles = "text-amber-800 bg-amber-100/60";
+                                                    } else {
+                                                        cardStyles = "border-orange-500 bg-orange-50/20 ring-1 ring-orange-500 shadow-sm shadow-orange-550/5";
+                                                        badgeStyles = "text-orange-700 bg-orange-100/60";
+                                                    }
+                                                }
+
+                                                return (
+                                                    <button
+                                                        key={method.id}
+                                                        type="button"
+                                                        onClick={() => setData('payment_method', method.code)}
+                                                        className={`flex flex-col justify-between p-4 rounded-xl border-2 text-left cursor-pointer transition-all duration-200 min-h-[90px] relative ${cardStyles}`}
+                                                    >
+                                                        <div className="flex items-center justify-between w-full">
+                                                            {/* Radio circle */}
+                                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${dotStyles}`}>
+                                                                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                                            </div>
+                                                            
+                                                            {/* Mini logo or branding marker */}
+                                                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${badgeStyles}`}>
+                                                                {method.code}
+                                                            </span>
+                                                        </div>
+                                                        
+                                                        <div className="mt-3">
+                                                            <span className="text-sm font-extrabold text-slate-900 block leading-tight">
+                                                                {method.name}
+                                                            </span>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
+
                                         {errors.payment_method && (
                                             <p className="mt-2 text-sm text-red-600 flex items-center">
                                                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -212,10 +261,21 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 {errors.payment_method}
                                             </p>
                                         )}
+                                        
                                         {paymentMethods?.find(m => m.code === data.payment_method)?.description && (
-                                            <p className="mt-3 text-xs font-semibold text-orange-700 bg-orange-50/80 p-3 rounded-lg border border-orange-100/60 leading-relaxed">
-                                                {paymentMethods.find(m => m.code === data.payment_method).description}
-                                            </p>
+                                            <div className="mt-4 p-4 rounded-xl border border-orange-100 bg-orange-50/40 flex items-start gap-3">
+                                                <svg className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <div className="text-xs font-semibold text-orange-900 leading-relaxed">
+                                                    {paymentMethods.find(m => m.code === data.payment_method).description}
+                                                    {paymentMethods.find(m => m.code === data.payment_method).config?.merchant_number && (
+                                                        <span className="block mt-1 font-bold text-slate-800">
+                                                            মার্চেন্ট নাম্বার: {paymentMethods.find(m => m.code === data.payment_method).config.merchant_number}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
 
