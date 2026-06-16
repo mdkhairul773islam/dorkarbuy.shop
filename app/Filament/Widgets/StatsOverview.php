@@ -12,6 +12,20 @@ class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        // 1. Calculate sales/revenue trend for last 7 days
+        $revenueChartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $revenueChartData[] = (float) Payment::where('status', 'completed')
+                ->whereDate('created_at', now()->subDays($i))
+                ->sum('amount');
+        }
+
+        // 2. Calculate orders trend for last 7 days
+        $ordersChartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $ordersChartData[] = (int) Order::whereDate('created_at', now()->subDays($i))->count();
+        }
+
         $totalRevenue = Payment::where('status', 'completed')->sum('amount');
         $todayRevenue = Payment::where('status', 'completed')
             ->whereDate('created_at', today())
@@ -19,27 +33,34 @@ class StatsOverview extends BaseWidget
         $totalOrders = Order::count();
         $pendingOrders = Order::where('status', 'pending')->count();
         $completedOrders = Order::where('status', 'completed')->count();
-        $totalProducts = Product::where('is_active', true)->count();
+        $activeProducts = Product::where('is_active', true)->count();
+        $inactiveProducts = Product::where('is_active', false)->count();
 
         return [
             Stat::make('Total Revenue', '৳ '.number_format($totalRevenue, 2))
-                ->description('All time revenue')
+                ->description('All time completed payments')
                 ->descriptionIcon('heroicon-o-banknotes')
+                ->chart($revenueChartData)
                 ->color('success'),
+
             Stat::make('Today Revenue', '৳ '.number_format($todayRevenue, 2))
-                ->description('Revenue today')
+                ->description('Completed today')
                 ->descriptionIcon('heroicon-o-arrow-trending-up')
                 ->color('success'),
+
             Stat::make('Total Orders', $totalOrders)
-                ->description($pendingOrders.' pending orders')
+                ->description('Order volume (last 7 days trend)')
                 ->descriptionIcon('heroicon-o-shopping-cart')
-                ->color('primary'),
-            Stat::make('Completed Orders', $completedOrders)
-                ->description('Successfully completed')
-                ->descriptionIcon('heroicon-o-check-circle')
-                ->color('success'),
-            Stat::make('Active Products', $totalProducts)
-                ->description('Products available')
+                ->chart($ordersChartData)
+                ->color('info'),
+
+            Stat::make('Pending Orders', $pendingOrders)
+                ->description($pendingOrders > 0 ? 'Requires attention' : 'All caught up')
+                ->descriptionIcon($pendingOrders > 0 ? 'heroicon-o-exclamation-triangle' : 'heroicon-o-check-circle')
+                ->color($pendingOrders > 0 ? 'warning' : 'success'),
+
+            Stat::make('Active Products', $activeProducts)
+                ->description("{$inactiveProducts} products are inactive")
                 ->descriptionIcon('heroicon-o-cube')
                 ->color('primary'),
         ];
