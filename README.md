@@ -18,17 +18,49 @@ A premium, modern e-commerce platform built with Laravel 13, Filament v5, Inerti
 
 ```mermaid
 graph TD
-    A[Customer browses products] --> B[Views details & Zooms product image]
+    A[Customer browses products] --> B[Views details & zooms product image]
+    A -->|Types in search bar| A1[Debounced suggestions dropdown with image & price]
     B --> C[Adds items to Cart]
-    C --> D[Proceeds to Checkout]
-    D --> E{Chooses Payment Method}
-    E -->|Bkash / Nagad / Rocket| F[Enter Transaction ID & Pay]
+    C -->|Opens Cart Drawer| C1[Slide-over cart panel updates instantly]
+    C1 --> D[Proceeds to Checkout]
+    D --> D1[Autofills form from LocalStorage]
+    D1 --> D2{Fills email address?}
+    D2 -->|Yes| D3[Valid email stored]
+    D2 -->|No| D4[Email stored as NULL in database]
+    D3 & D4 --> E{Chooses Payment Card}
+    E -->|bKash / Nagad / Rocket / Upay| F[Displays brand styling & merchant number]
+    F --> F1[Enters Transaction ID & submits]
     E -->|Cash on Delivery| G[Place Order directly]
-    F --> H[Order Created as Pending]
-    G --> H
-    H --> I[Admin reviews & accepts order]
-    I --> J[Admin processes & completes order]
+    F1 & G --> H[Order Created as Pending]
+    H --> I[Admin reviews order in Filament Panel]
+    I --> I1{Has customer email?}
+    I1 -->|Yes| I2[Show Send Email action to dispatch digital file]
+    I1 -->|No| I3[Hide Send Email action, process manually]
 ```
+
+## 🌟 UX & UI Optimization Features (Phase 1-3)
+
+We have recently optimized the user experience (UX) and user interface (UI) to boost conversions and streamline checkout workflows:
+
+### 1. ⚡ Global State & Interactive Search (Phase 2)
+- **Redux Integration:** Integrated `@reduxjs/toolkit` and `react-redux` for global client-side state management, supporting smooth components communication without prop-drilling.
+- **Debounced Autocomplete Search:** Main search input executes a 300ms debounced asynchronous query to `/products/suggestions`, rendering a rich autocomplete suggestions modal with product thumbnails, title, type, and live final pricing.
+
+### 2. 🛒 Slide-over Cart Drawer (Phase 2)
+- Replaced direct page redirection with a modern slide-over `CartDrawer.jsx` panel.
+- Users can view, increase, decrease, or remove items from the drawer instantly. Main page layouts adjust their states in real-time.
+
+### 3. 💳 Checkout Optimization (Phase 3)
+- **Optional Email Field:** Removed strict constraints on the email field. The database migration altered `customer_email` to `nullable` in the `orders` table. Leaving it empty saves a clean `NULL` database entry.
+- **Data Persistence (Autofill):** Customer checkout field values (`name`, `phone`, `email`, `address`) are cached in `localStorage` and automatically loaded on subsequent visits to prevent user typing fatigue.
+- **Branded Payment Cards:** The payment method dropdown has been updated to premium interactive cards for **bKash, Nagad, Rocket, and Upay**. Each card dynamically displays the gateway details and active merchant account numbers based on database configuration, changing styles (e.g. pink for bKash, orange for Nagad) on selection.
+- **Admin Action Visibility:** The order list "Send Email" action (to dispatch digital files) automatically hides if the customer did not provide an email address, preventing invalid mail delivery errors.
+
+### 4. 📱 Mobile Navigation Redesign
+- **Sticky Bottom Navigation Bar:** Mobile users get a fixed sticky bottom menu (Home, Shop, Cart with dynamic item badge, Profile) for an app-like UX.
+- **Enriched Mobile Drawer:** Extended the mobile side drawer to display user credentials and quick access to Dashboard, My Orders, Profile settings, and Logout.
+
+---
 
 ### 1. 🛒 Customer Frontend Workflow & Pages
 
