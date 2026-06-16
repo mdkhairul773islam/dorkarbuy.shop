@@ -15,10 +15,9 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
+                    ->searchable(query: fn ($query, $search) => $query->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                    ->sortable()
+                    ->description(fn ($record) => $record->email),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),

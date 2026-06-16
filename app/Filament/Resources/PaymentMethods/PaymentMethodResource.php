@@ -15,10 +15,12 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class PaymentMethodResource extends Resource
@@ -35,50 +37,62 @@ class PaymentMethodResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)
-                    ->label('Payment Method Name')
-                    ->placeholder('e.g., bKash, Rocket, Nagad'),
+                Section::make('Basic Details')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->label('Payment Method Name')
+                                    ->placeholder('e.g., bKash, Rocket, Nagad'),
 
-                TextInput::make('code')
-                    ->required()
-                    ->maxLength(50)
-                    ->unique(ignoreRecord: true)
-                    ->label('Code')
-                    ->placeholder('e.g., bkash, rocket, nagad')
-                    ->helperText('Unique identifier for this payment method'),
+                                TextInput::make('code')
+                                    ->required()
+                                    ->maxLength(50)
+                                    ->unique(ignoreRecord: true)
+                                    ->label('Code')
+                                    ->placeholder('e.g., bkash, rocket, nagad')
+                                    ->helperText('Unique identifier for this payment method'),
+                            ]),
 
-                Textarea::make('description')
-                    ->maxLength(500)
-                    ->label('Description')
-                    ->placeholder('Brief description of this payment method')
-                    ->rows(3),
+                        Textarea::make('description')
+                            ->maxLength(500)
+                            ->label('Description')
+                            ->placeholder('Brief description of this payment method')
+                            ->rows(3),
 
-                FileUpload::make('logo')
-                    ->image()
-                    ->maxSize(1024)
-                    ->label('Logo')
-                    ->directory('payment-logos')
-                    ->helperText('Upload payment method logo (max 1MB)'),
+                        TextInput::make('sort_order')
+                            ->numeric()
+                            ->default(1)
+                            ->minValue(1)
+                            ->label('Sort Order')
+                            ->helperText('Display order (lower numbers appear first)'),
+                    ]),
 
-                KeyValue::make('config')
-                    ->label('Configuration')
-                    ->keyLabel('Key')
-                    ->valueLabel('Value')
-                    ->helperText('Additional configuration (e.g., merchant_number, api_key)'),
+                Section::make('Branding & Configuration')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                FileUpload::make('logo')
+                                    ->image()
+                                    ->maxSize(1024)
+                                    ->label('Logo')
+                                    ->directory('payment-logos')
+                                    ->helperText('Upload payment method logo (max 1MB)'),
 
-                TextInput::make('sort_order')
-                    ->numeric()
-                    ->default(1)
-                    ->minValue(1)
-                    ->label('Sort Order')
-                    ->helperText('Display order (lower numbers appear first)'),
+                                Toggle::make('is_active')
+                                    ->default(true)
+                                    ->label('Active Status')
+                                    ->helperText('Enable/disable this payment method'),
+                            ]),
 
-                Toggle::make('is_active')
-                    ->default(true)
-                    ->label('Active')
-                    ->helperText('Enable/disable this payment method'),
+                        KeyValue::make('config')
+                            ->label('Configuration')
+                            ->keyLabel('Key')
+                            ->valueLabel('Value')
+                            ->helperText('Additional configuration (e.g., merchant_number, api_key)'),
+                    ]),
             ]);
     }
 
@@ -102,8 +116,7 @@ class PaymentMethodResource extends Resource
                     ->limit(50)
                     ->label('Description'),
 
-                IconColumn::make('is_active')
-                    ->boolean()
+                ToggleColumn::make('is_active')
                     ->sortable()
                     ->label('Active'),
 
