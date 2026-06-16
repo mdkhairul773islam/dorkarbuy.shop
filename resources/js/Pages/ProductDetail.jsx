@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import Layout from '../Layouts/Layout';
+import { useDispatch } from 'react-redux';
+import { openDrawer } from '../Redux/cartSlice';
 
 export default function ProductDetail({ auth, product, fbEventId }) {
+    const dispatch = useDispatch();
     const [activeTab, setActiveTab] = useState('summary');
     const [isLookInsideOpen, setIsLookInsideOpen] = useState(false);
     const [activeImage, setActiveImage] = useState(null);
@@ -110,7 +113,11 @@ export default function ProductDetail({ auth, product, fbEventId }) {
 
     const addToCart = (e) => {
         e.preventDefault();
-        post('/cart/add');
+        post('/cart/add', {
+            onSuccess: () => {
+                dispatch(openDrawer());
+            }
+        });
     };
 
     const getTypeLabel = (type) => {

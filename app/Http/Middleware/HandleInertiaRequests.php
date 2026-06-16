@@ -56,6 +56,15 @@ class HandleInertiaRequests extends Middleware
 
                 return $cart ? $cart->items()->sum('quantity') : 0;
             },
+            'cart' => function () use ($request) {
+                if ($request->user('web')) {
+                    $cart = Cart::where('user_id', $request->user('web')->id)->first();
+                } else {
+                    $cart = Cart::where('session_id', session()->getId())->first();
+                }
+
+                return $cart ? $cart->load('items.product') : null;
+            },
             'settings' => function () {
                 $site_logo = Setting::get('site_logo');
                 $site_favicon = Setting::get('site_favicon');

@@ -20,6 +20,7 @@ Route::get('/p/{slug}', [PageController::class, 'show'])->name('page.show');
 
 // Products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/suggestions', [ProductController::class, 'suggestions'])->name('products.suggestions');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
 // Guest routes

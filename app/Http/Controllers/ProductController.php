@@ -91,4 +91,33 @@ class ProductController extends Controller
             'fbEventId' => $fbEventId,
         ]);
     }
+
+    public function suggestions(Request $request)
+    {
+        $search = $request->query('search');
+        if (! $search || strlen($search) < 2) {
+            return response()->json([]);
+        }
+
+        $products = Product::where('is_active', true)
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('author', 'like', '%'.$search.'%');
+            })
+            ->select('id', 'name', 'slug', 'price', 'discount_price', 'discount_type', 'image', 'type')
+            ->limit(5)
+            ->get();
+
+        // Calculate and attach final_price
+        $products->each(function ($product) {
+            $product->final_price = $product->discount_price
+                ? ($product->discount_type === 'flat'
+                    ? (float) $product->price - (float) $product->discount_price
+                    : (float) $product->price * (1 - (float) $product->discount_price / 100)
+                )
+                : (float) $product->price;
+        });
+
+        return response()->json($products);
+    }
 }

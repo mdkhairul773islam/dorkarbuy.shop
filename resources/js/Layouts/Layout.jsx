@@ -1,19 +1,67 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import { useEffect, useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { openDrawer, setSearchSuggestions, setSearchLoading } from '../Redux/cartSlice';
+import CartDrawer from '../Components/CartDrawer';
 
 export default function Layout({ children }) {
+    const dispatch = useDispatch();
+    const { searchSuggestions, searchLoading } = useSelector((state) => state.cart);
     const { auth, flash, cartItemsCount, settings } = usePage().props;
     const { url } = usePage();
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const userMenuRef = useRef(null);
+    const searchRef = useRef(null);
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
+        setShowSuggestions(false);
         router.get('/products', { search: searchQuery });
     };
+
+    // Debounced search suggestion effect
+    useEffect(() => {
+        if (searchQuery.trim().length < 2) {
+            dispatch(setSearchSuggestions([]));
+            setShowSuggestions(false);
+            return;
+        }
+
+        dispatch(setSearchLoading(true));
+        const delayDebounceFn = setTimeout(() => {
+            fetch(`/products/suggestions?search=${encodeURIComponent(searchQuery)}`)
+                .then(res => res.json())
+                .then(data => {
+                    dispatch(setSearchSuggestions(data));
+                    setShowSuggestions(true);
+                    dispatch(setSearchLoading(false));
+                })
+                .catch(err => {
+                    console.error('Error fetching suggestions:', err);
+                    dispatch(setSearchLoading(false));
+                });
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchQuery, dispatch]);
+
+    // Click outside search suggestions handler
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         if (flash.success) {
@@ -114,7 +162,10 @@ export default function Layout({ children }) {
                             
                             {/* Mobile actions and Hamburger */}
                             <div className="flex items-center space-x-2 md:hidden">
-                                <Link href="/cart" className="relative text-slate-700 p-2 hover:bg-slate-50 rounded-full transition-colors">
+                                <button 
+                                    onClick={() => dispatch(openDrawer())} 
+                                    className="relative text-slate-700 p-2 hover:bg-slate-50 rounded-full transition-colors cursor-pointer"
+                                >
                                     <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                                         <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                     </svg>
@@ -123,7 +174,7 @@ export default function Layout({ children }) {
                                             {cartItemsCount}
                                         </span>
                                     )}
-                                </Link>
+                                </button>
                                 <button
                                     className="p-2 rounded-md text-slate-700 hover:text-orange-600 hover:bg-orange-50 focus:outline-none transition-colors"
                                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -143,14 +194,17 @@ export default function Layout({ children }) {
                         </div>
 
                         {/* Search Bar - Center */}
-                        <form onSubmit={handleSearchSubmit} className="w-full md:max-w-md lg:max-w-xl flex-1">
-                            <div className="relative flex items-center">
+                        <form onSubmit={handleSearchSubmit} className="w-full md:max-w-md lg:max-w-xl flex-1 relative z-50">
+                            <div className="relative flex items-center" ref={searchRef}>
                                 <input
                                     type="text"
                                     placeholder="বই, পোশাক, ইলেকট্রনিক্স বা কোর্স খুঁজুন..."
                                     className="w-full pl-4 pr-24 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:bg-white transition-all shadow-inner"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
+                                    onFocus={() => {
+                                        if (searchQuery.trim().length >= 2) setShowSuggestions(true);
+                                    }}
                                 />
                                 <button
                                     type="submit"
@@ -161,12 +215,80 @@ export default function Layout({ children }) {
                                     </svg>
                                     <span>Search</span>
                                 </button>
+
+                                {/* Autocomplete Suggestions Dropdown */}
+                                {showSuggestions && (
+                                    <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden max-h-80 overflow-y-auto">
+                                        {searchLoading ? (
+                                            <div className="p-4 text-center text-xs text-gray-500 flex items-center justify-center gap-2">
+                                                <svg className="animate-spin h-4 w-4 text-orange-600" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                লোডিং হচ্ছে...
+                                            </div>
+                                        ) : searchSuggestions.length === 0 ? (
+                                            <div className="p-4 text-center text-xs text-gray-500">
+                                                কোনো প্রোডাক্ট পাওয়া যায়নি।
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-gray-100">
+                                                {searchSuggestions.map((prod) => (
+                                                    <a
+                                                        key={prod.id}
+                                                        href={`/products/${prod.slug}`}
+                                                        className="flex items-center gap-3 p-3 hover:bg-orange-50/50 transition-colors"
+                                                        onClick={() => setShowSuggestions(false)}
+                                                    >
+                                                        {/* Product Image Thumbnail */}
+                                                        <div className="w-10 h-10 bg-gray-50 border border-gray-100 rounded-lg overflow-hidden shrink-0 flex items-center justify-center">
+                                                            {prod.image ? (
+                                                                <img
+                                                                    src={`/storage/${prod.image}`}
+                                                                    alt={prod.name}
+                                                                    className="w-full h-full object-contain p-0.5"
+                                                                />
+                                                            ) : (
+                                                                <div className="text-[6px] text-gray-400 font-extrabold uppercase">DB</div>
+                                                            )}
+                                                        </div>
+
+                                                        {/* Info */}
+                                                        <div className="flex-1 min-w-0">
+                                                            <h4 className="text-xs font-bold text-gray-900 truncate">
+                                                                {prod.name}
+                                                            </h4>
+                                                            <span className="text-[10px] text-gray-400 uppercase font-semibold">
+                                                                {prod.type}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Price */}
+                                                        <div className="text-right shrink-0">
+                                                            <span className="text-xs font-black text-gray-900 block">
+                                                                ৳{parseFloat(prod.final_price).toFixed(2)}
+                                                            </span>
+                                                            {prod.discount_price && (
+                                                                <span className="text-[9px] text-gray-400 line-through">
+                                                                    ৳{parseFloat(prod.price).toFixed(2)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </form>
 
                         {/* Desktop actions - Right */}
                         <div className="hidden md:flex items-center space-x-4">
-                            <Link href="/cart" className="relative text-slate-700 hover:text-orange-600 p-2 hover:bg-orange-50 rounded-full transition-colors">
+                            <button 
+                                onClick={() => dispatch(openDrawer())} 
+                                className="relative text-slate-700 hover:text-orange-600 p-2 hover:bg-orange-50 rounded-full transition-colors cursor-pointer"
+                            >
                                 <svg className="h-6.5 w-6.5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                                     <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
@@ -175,7 +297,7 @@ export default function Layout({ children }) {
                                         {cartItemsCount}
                                     </span>
                                 )}
-                            </Link>
+                            </button>
 
                             {auth?.user ? (
                                 <div className="relative" ref={userMenuRef}>
@@ -379,6 +501,7 @@ export default function Layout({ children }) {
             )}
 
             <main>{children}</main>
+            <CartDrawer />
 
             {/* Footer - Rokomari Style */}
             <footer className="bg-gray-900 text-gray-300 mt-16">
