@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,10 +13,13 @@ class Product extends Model
     protected $fillable = [
         'category_id',
         'name',
+        'name_bn',
         'slug',
         'type',
         'description',
+        'description_bn',
         'content',
+        'content_bn',
         'price',
         'discount_price',
         'discount_type',
@@ -23,18 +27,71 @@ class Product extends Model
         'images',
         'stock',
         'author',
+        'author_bn',
         'duration',
         'is_featured',
         'is_active',
         'show_discount_badge',
         'specification',
+        'specification_bn',
         'author_details',
+        'author_details_bn',
         'look_inside_type',
         'look_inside_pdf',
         'look_inside_images',
         'look_inside_text',
+        'look_inside_text_bn',
         'digital_file',
     ];
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->name_bn)) ? $this->name_bn : $value,
+        );
+    }
+
+    protected function description(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->description_bn)) ? $this->description_bn : $value,
+        );
+    }
+
+    protected function content(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->content_bn)) ? $this->content_bn : $value,
+        );
+    }
+
+    protected function author(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->author_bn)) ? $this->author_bn : $value,
+        );
+    }
+
+    protected function specification(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->specification_bn)) ? $this->specification_bn : $value,
+        );
+    }
+
+    protected function authorDetails(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->author_details_bn)) ? $this->author_details_bn : $value,
+        );
+    }
+
+    protected function lookInsideText(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => (app()->getLocale() === 'bn' && ! empty($this->look_inside_text_bn)) ? $this->look_inside_text_bn : $value,
+        );
+    }
 
     protected $casts = [
         'price' => 'decimal:2',

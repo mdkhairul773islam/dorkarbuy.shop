@@ -3,9 +3,11 @@ import { Head, useForm } from '@inertiajs/react';
 import Layout from '../Layouts/Layout';
 import { useDispatch } from 'react-redux';
 import { openDrawer } from '../Redux/cartSlice';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function ProductDetail({ auth, product, fbEventId }) {
     const dispatch = useDispatch();
+    const { __ } = useTranslation();
     const [activeTab, setActiveTab] = useState('summary');
     const [isLookInsideOpen, setIsLookInsideOpen] = useState(false);
     const [activeImage, setActiveImage] = useState(null);
@@ -122,12 +124,12 @@ export default function ProductDetail({ auth, product, fbEventId }) {
 
     const getTypeLabel = (type) => {
         switch (type) {
-            case 'clothing': return 'Clothing & Fashion';
-            case 'electronics': return 'Electronics & Gadgets';
-            case 'book': return 'Book';
-            case 'course': return 'Course/Tutorial';
-            case 'digital': return 'Digital Product';
-            default: return type || 'Product';
+            case 'clothing': return __('Clothing & Fashion');
+            case 'electronics': return __('Electronics & Gadgets');
+            case 'book': return __('Book');
+            case 'course': return __('Course/Tutorial');
+            case 'digital': return __('Digital Product');
+            default: return type || __('Product');
         }
     };
 
@@ -144,11 +146,11 @@ export default function ProductDetail({ auth, product, fbEventId }) {
 
     const getDurationLabel = (type) => {
         switch (type) {
-            case 'book': return 'Pages';
-            case 'clothing': return 'Sizes Available';
-            case 'electronics': return 'Model/Warranty';
-            case 'course': return 'Duration';
-            default: return 'Specification/Duration';
+            case 'book': return __('Pages');
+            case 'clothing': return __('Sizes Available');
+            case 'electronics': return __('Model/Warranty');
+            case 'course': return __('Duration');
+            default: return __('Specification/Duration');
         }
     };
 
@@ -178,7 +180,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                             {/* Look Inside Overlay */}
                                             <div className="absolute top-0 inset-x-0 w-full bg-white bg-opacity-95 py-2.5 px-4 shadow text-center transform -translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                                                 <div className="text-orange-600 font-bold flex items-center justify-center space-x-2">
-                                                    <span>Look Inside</span>
+                                                    <span>{__('Look Inside')}</span>
                                                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                                     </svg>
@@ -186,7 +188,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                             </div>
                                             <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-md z-10 flex items-center space-x-1 outline outline-1 outline-gray-200">
                                                 <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM9 13H7v-2h2v2zm0-4H7V5h2v4z"/></svg>
-                                                <span className="text-xs font-bold text-gray-700">Look Inside</span>
+                                                <span className="text-xs font-bold text-gray-700">{__('Look Inside')}</span>
                                             </div>
                                         </div>
                                     ) : (
@@ -215,14 +217,14 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                                     <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
                                                     </svg>
-                                                    <span className="text-[10px] font-bold text-gray-700">Hover to Zoom</span>
+                                                    <span className="text-[10px] font-bold text-gray-700">{__('Hover to Zoom')}</span>
                                                 </div>
                                             )}
                                         </div>
                                     )
                                 ) : (
                                     <div className="w-full h-96 bg-gray-100 flex items-center justify-center rounded-2xl">
-                                        <span className="text-gray-400">No image</span>
+                                        <span className="text-gray-400">{__('No image')}</span>
                                     </div>
                                 )}
                             </div>
@@ -242,7 +244,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                         >
                                             <img
                                                 src={`/storage/${product.image}`}
-                                                alt="Main preview"
+                                                alt={__('Main preview')}
                                                 className="max-w-full max-h-full object-contain"
                                             />
                                         </button>
@@ -307,7 +309,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                             <div className="mt-6 space-y-2.5 border-t border-b border-gray-100 py-6">
                                 {product.author && (
                                     <div className="flex items-center">
-                                        <span className="text-sm font-bold text-gray-500 mr-2">{product.author_title || 'Author/Brand'}:</span>
+                                        <span className="text-sm font-bold text-gray-500 mr-2">{product.author_title ? __(product.author_title) : __('Author/Brand')}:</span>
                                         <span className="text-sm font-bold text-gray-900">{product.author}</span>
                                     </div>
                                 )}
@@ -318,9 +320,9 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                     </div>
                                 )}
                                 <div className="flex items-center">
-                                    <span className="text-sm font-bold text-gray-500 mr-2">Stock Availability:</span>
+                                    <span className="text-sm font-bold text-gray-500 mr-2">{__('Stock Availability:')}</span>
                                     <span className={`text-sm font-bold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                        {product.stock > 0 ? `${product.stock} items left in stock` : 'Out of stock'}
+                                        {product.stock > 0 ? `${product.stock} ${__('items left in stock')}` : __('Out of stock')}
                                     </span>
                                 </div>
                             </div>
@@ -328,7 +330,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                             {/* Size Selector for Clothing */}
                             {product.type === 'clothing' && sizes.length > 0 && (
                                 <div className="mt-6 border-t border-gray-100 pt-6">
-                                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Select Size</h3>
+                                    <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider">{__('Select Size')}</h3>
                                     <div className="grid grid-cols-4 gap-3 mt-3">
                                         {sizes.map((size) => (
                                             <button
@@ -354,7 +356,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                     disabled={processing || product.stock === 0}
                                     className="flex-1 bg-orange-600 border border-transparent rounded-xl py-4 px-8 flex items-center justify-center text-base font-bold text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-lg"
                                 >
-                                    {product.stock === 0 ? 'Out of Stock' : 'অর্ডার করুন / Add to Cart'}
+                                    {product.stock === 0 ? __('Out of stock') : __('Order Now / Add to Cart')}
                                 </button>
                                 
                                 {product.type === 'book' && product.look_inside_type && (
@@ -369,7 +371,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                         </svg>
-                                        Look Inside
+                                        {__('Look Inside')}
                                     </button>
                                 )}
                             </form>
@@ -378,7 +380,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
 
                     {/* Dynamic Details block */}
                     <div className="mt-16 w-full text-left">
-                        <h2 className="text-2xl font-bold mb-6 text-gray-950">পণ্য বিবরণী / Details</h2>
+                        <h2 className="text-2xl font-bold mb-6 text-gray-950">{__('Product Details')}</h2>
                         
                         <div className="flex space-x-1 border-b border-gray-200">
                             <button
@@ -389,7 +391,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                             >
-                                {product.summary_title || 'Summary'}
+                                {product.summary_title ? __(product.summary_title) : __('Summary')}
                             </button>
                             <button
                                 onClick={() => setActiveTab('specification')}
@@ -399,7 +401,7 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                 }`}
                             >
-                                {product.specification_title || 'Specification'}
+                                {product.specification_title ? __(product.specification_title) : __('Specification')}
                             </button>
                             {product.author && (
                                 <button
@@ -410,27 +412,27 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                                     }`}
                                 >
-                                    {product.author_title || 'Author/Brand'}
+                                    {product.author_title ? __(product.author_title) : __('Author/Brand')}
                                 </button>
                             )}
                         </div>
 
                         <div className="py-8 min-h-[200px]">
                             {activeTab === 'summary' && (
-                                <div className="rokomari-content" dangerouslySetInnerHTML={{ __html: product.content || '<p>No summary provided for this product.</p>' }} />
+                                <div className="rokomari-content" dangerouslySetInnerHTML={{ __html: product.content || `<p>${__('No summary desc')}</p>` }} />
                             )}
                             {activeTab === 'specification' && (
                                 product.specification ? (
                                     <div className="rokomari-content" dangerouslySetInnerHTML={{ __html: product.specification }} />
                                 ) : (
-                                    <div className="text-gray-400 py-8 text-center italic border border-dashed border-gray-200 rounded-xl">Specification details have not been added yet.</div>
+                                    <div className="text-gray-400 py-8 text-center italic border border-dashed border-gray-200 rounded-xl">{__('No specification desc')}</div>
                                 )
                             )}
                             {activeTab === 'author_details' && (
                                 product.author_details ? (
                                     <div className="rokomari-content" dangerouslySetInnerHTML={{ __html: product.author_details }} />
                                 ) : (
-                                    <div className="text-gray-400 py-8 text-center italic border border-dashed border-gray-200 rounded-xl">Author details have not been added yet.</div>
+                                    <div className="text-gray-400 py-8 text-center italic border border-dashed border-gray-200 rounded-xl">{__('No author details desc')}</div>
                                 )
                             )}
                         </div>
@@ -460,19 +462,19 @@ export default function ProductDetail({ auth, product, fbEventId }) {
                                 
                                 <div className="mt-3 text-center sm:mt-0 sm:text-left h-[75vh] flex flex-col">
                                     <h3 className="text-xl font-bold leading-6 text-gray-900 mb-4" id="modal-title">
-                                        Look Inside - {product.name}
+                                        {__('Look Inside - ')}{product.name}
                                     </h3>
                                     
                                     <div className="flex-1 w-full bg-gray-50 rounded border border-gray-200 overflow-y-auto">
                                         {product.look_inside_type === 'pdf' && product.look_inside_pdf && (
-                                            <iframe src={`/storage/${product.look_inside_pdf}`} className="w-full h-full" title="PDF Preview"></iframe>
+                                            <iframe src={`/storage/${product.look_inside_pdf}`} className="w-full h-full" title={__('PDF Preview')}></iframe>
                                         )}
                                         {product.look_inside_type === 'text' && product.look_inside_text && (
                                             <div className="p-8 rokomari-content" dangerouslySetInnerHTML={{ __html: product.look_inside_text }}></div>
                                         )}
                                         {(!product.look_inside_type || (!product.look_inside_pdf && !product.look_inside_text)) && (
                                             <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                                No preview content available.
+                                                {__('No preview content available.')}
                                             </div>
                                         )}
                                     </div>

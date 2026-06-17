@@ -18,26 +18,39 @@ class SliderForm
             ->components([
                 Section::make('Slider Info')
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('title')
+                                    ->default(null),
+                                TextInput::make('title_bn')
+                                    ->label('Title (Bangla)')
                                     ->default(null),
                                 Toggle::make('is_active')
                                     ->label('Active Status')
                                     ->default(true)
                                     ->required(),
                             ]),
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('button_text')
+                                    ->default(null),
+                                TextInput::make('button_text_bn')
+                                    ->label('Button Text (Bangla)')
                                     ->default(null),
                                 TextInput::make('button_link')
                                     ->default(null),
                             ]),
-                        Textarea::make('description')
-                            ->default(null)
-                            ->columnSpanFull()
-                            ->rows(3),
+                        Grid::make(2)
+                            ->schema([
+                                Textarea::make('description')
+                                    ->default(null)
+                                    ->rows(3),
+                                Textarea::make('description_bn')
+                                    ->label('Description (Bangla)')
+                                    ->default(null)
+                                    ->rows(3),
+                            ])
+                            ->columnSpanFull(),
                     ]),
 
                 Section::make('Slider Media')

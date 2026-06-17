@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { useTranslation } from '../hooks/useTranslation';
 
 const FallbackImage = ({ type }) => {
     let gradient = "from-slate-100 to-slate-200 text-slate-400";
@@ -54,14 +55,16 @@ const FallbackImage = ({ type }) => {
 };
 
 export default function ProductCard({ product }) {
+    const { __ } = useTranslation();
+
     const getTypeLabel = (type) => {
         switch (type) {
-            case 'clothing': return 'Clothing & Fashion';
-            case 'electronics': return 'Electronics & Gadgets';
-            case 'book': return 'Book';
-            case 'course': return 'Course/Tutorial';
-            case 'digital': return 'Digital Product';
-            default: return type || 'Product';
+            case 'clothing': return __('Clothing & Fashion');
+            case 'electronics': return __('Electronics & Gadgets');
+            case 'book': return __('Book');
+            case 'course': return __('Course/Tutorial');
+            case 'digital': return __('Digital Product');
+            default: return type || __('Product');
         }
     };
 
@@ -104,8 +107,8 @@ export default function ProductCard({ product }) {
                     <div className="absolute top-3 right-3 z-10">
                         <span className="bg-red-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm tracking-wide">
                             {product.discount_type === 'flat' 
-                                ? `৳${parseFloat(product.discount_price).toFixed(0)} OFF`
-                                : `${Math.round(parseFloat(product.discount_price))}% OFF`
+                                ? `৳${parseFloat(product.discount_price).toFixed(0)} ${__('OFF')}`
+                                : `${Math.round(parseFloat(product.discount_price))}% ${__('OFF')}`
                             }
                         </span>
                     </div>
@@ -142,7 +145,7 @@ export default function ProductCard({ product }) {
                 
                 {/* Author/Vendor */}
                 {product.author ? (
-                    <p className="text-[11px] text-gray-400 italic mb-3">By {product.author}</p>
+                    <p className="text-[11px] text-gray-400 italic mb-3">{__('By')} {product.author}</p>
                 ) : (
                     <div className="h-4 mb-3"></div>
                 )}
@@ -166,7 +169,7 @@ export default function ProductCard({ product }) {
                         href={`/products/${product.slug}`}
                         className="px-3 py-1.5 bg-orange-50 text-orange-700 text-xs font-bold rounded-lg border border-orange-100 hover:bg-orange-600 hover:text-white hover:border-transparent transition-all duration-200 shadow-sm"
                     >
-                        অর্ডার করুন
+                        {__('Order Now')}
                     </Link>
                 </div>
             </div>

@@ -1,12 +1,25 @@
 import { Head, Link, useForm, router, usePage } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import Layout from '../Layouts/Layout';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function Cart({ auth, cart }) {
+    const { __ } = useTranslation();
     const { flash } = usePage().props;
     const { delete: destroy } = useForm();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+
+    const getTypeLabel = (type) => {
+        switch (type) {
+            case 'clothing': return __('Clothing & Fashion');
+            case 'electronics': return __('Electronics & Gadgets');
+            case 'book': return __('Book');
+            case 'course': return __('Course/Tutorial');
+            case 'digital': return __('Digital Product');
+            default: return type || __('Product');
+        }
+    };
 
     useEffect(() => {
         if (typeof fbq !== 'undefined' && flash?.fb_event?.type === 'AddToCart') {
@@ -47,11 +60,11 @@ export default function Cart({ auth, cart }) {
 
     return (
         <Layout>
-            <Head title="Shopping Cart" />
+            <Head title={__('Shopping Cart')} />
 
             <div className="bg-slate-50/50 min-h-screen py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-8">Shopping Cart</h1>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-8">{__('Shopping Cart')}</h1>
 
                     {cart?.items?.length > 0 ? (
                         <div className="lg:grid lg:grid-cols-12 lg:gap-x-8">
@@ -71,7 +84,7 @@ export default function Cart({ auth, cart }) {
                                                         />
                                                     ) : (
                                                         <div className="w-24 h-24 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-                                                            <span className="text-xs text-slate-400 font-semibold">No image</span>
+                                                            <span className="text-xs text-slate-400 font-semibold">{__('No image')}</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -88,11 +101,11 @@ export default function Cart({ auth, cart }) {
                                                             <p className="shrink-0 text-slate-900">৳{(parseFloat(item.price) * item.quantity).toFixed(2)}</p>
                                                         </div>
                                                         <p className="mt-1 text-xs text-slate-400 uppercase tracking-wider font-semibold">
-                                                            {item.product?.type}
+                                                            {getTypeLabel(item.product?.type)}
                                                         </p>
                                                         {item.size && (
                                                             <p className="mt-2">
-                                                                <span className="text-xs font-bold text-orange-700 bg-orange-50 rounded-lg px-2.5 py-1 border border-orange-100">Size: {item.size}</span>
+                                                                <span className="text-xs font-bold text-orange-700 bg-orange-50 rounded-lg px-2.5 py-1 border border-orange-100">{__('Size:')} {item.size}</span>
                                                             </p>
                                                         )}
                                                     </div>
@@ -100,7 +113,7 @@ export default function Cart({ auth, cart }) {
                                                     <div className="flex items-center justify-between mt-4 sm:mt-0 pt-4 sm:pt-0">
                                                         {/* Quantity selector */}
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-xs font-bold text-slate-500">Qty:</span>
+                                                            <span className="text-xs font-bold text-slate-500">{__('Qty:')}</span>
                                                             <div className="flex items-center border border-slate-200 rounded-xl bg-white shadow-sm overflow-hidden">
                                                                 <button
                                                                     type="button"
@@ -141,7 +154,7 @@ export default function Cart({ auth, cart }) {
                                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                             </svg>
-                                                            <span>Remove</span>
+                                                            <span>{__('Remove')}</span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -154,19 +167,19 @@ export default function Cart({ auth, cart }) {
                             {/* Summary Section */}
                             <div className="mt-8 lg:mt-0 lg:col-span-5">
                                 <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                                    <h2 className="text-xl font-bold text-slate-900 mb-6">Order Summary</h2>
+                                    <h2 className="text-xl font-bold text-slate-900 mb-6">{__('Order Summary')}</h2>
                                     
                                     <div className="space-y-4 text-sm text-slate-600">
                                         <div className="flex justify-between">
-                                            <span>Subtotal</span>
+                                            <span>{__('Subtotal')}</span>
                                             <span className="font-semibold text-slate-800">৳{total.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between pb-4 border-b border-slate-100">
-                                            <span>Shipping</span>
-                                            <span className="text-emerald-600 font-bold">Free</span>
+                                            <span>{__('Shipping')}</span>
+                                            <span className="text-emerald-600 font-bold">{__('Free')}</span>
                                         </div>
                                         <div className="flex justify-between items-center pt-2">
-                                            <span className="text-base font-bold text-slate-900">Total Amount</span>
+                                            <span className="text-base font-bold text-slate-900">{__('Total Amount')}</span>
                                             <span className="text-xl font-black text-orange-600">৳{total.toFixed(2)}</span>
                                         </div>
                                     </div>
@@ -176,7 +189,7 @@ export default function Cart({ auth, cart }) {
                                             href="/checkout"
                                             className="w-full bg-orange-600 hover:bg-orange-700 text-white rounded-xl py-4 px-6 text-base font-bold transition-all hover:shadow-lg hover:shadow-orange-600/20 active:scale-95 flex items-center justify-center space-x-2 shadow-md"
                                         >
-                                            <span>Proceed to Checkout</span>
+                                            <span>{__('Proceed to Checkout')}</span>
                                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>
@@ -185,7 +198,7 @@ export default function Cart({ auth, cart }) {
 
                                     <div className="mt-4 text-center">
                                         <Link href="/products" className="text-sm font-semibold text-orange-600 hover:text-orange-700 transition-colors inline-flex items-center space-x-1">
-                                            <span>&larr; Continue Shopping</span>
+                                            <span>&larr; {__('Continue Shopping')}</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -199,13 +212,13 @@ export default function Cart({ auth, cart }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
                             </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-2">Your cart is empty</h3>
-                            <p className="text-slate-500 mb-8 max-w-sm mx-auto">Looks like you haven't added anything to your cart yet. Let's find some great products for you!</p>
+                            <h3 className="text-2xl font-bold text-slate-900 mb-2">{__('Your cart is empty')}</h3>
+                            <p className="text-slate-505 mb-8 max-w-sm mx-auto">{__('Empty cart desc')}</p>
                             <Link
                                 href="/products"
                                 className="inline-flex items-center px-6 py-3.5 bg-orange-600 hover:bg-orange-700 text-white text-base font-bold rounded-xl shadow-lg hover:shadow-orange-600/20 transition-all active:scale-95"
                             >
-                                Browse Products
+                                {__('Browse Products')}
                             </Link>
                         </div>
                     )}
@@ -232,10 +245,10 @@ export default function Cart({ auth, cart }) {
                             {/* Content */}
                             <div className="text-center">
                                 <h3 className="text-2xl font-black text-slate-900 mb-2">
-                                    Remove Item?
+                                    {__('Remove Item?')}
                                 </h3>
                                 <p className="text-sm text-slate-500 mb-8 leading-relaxed">
-                                    Are you sure you want to remove this item from your cart? This action cannot be undone.
+                                    {__('Remove item desc')}
                                 </p>
                             </div>
 
@@ -245,13 +258,13 @@ export default function Cart({ auth, cart }) {
                                     onClick={cancelDelete}
                                     className="flex-1 px-6 py-3.5 border border-slate-200 rounded-xl text-slate-700 font-bold hover:bg-slate-50 active:scale-95 transition-all text-sm"
                                 >
-                                    Cancel
+                                    {__('Cancel')}
                                 </button>
                                 <button
                                     onClick={confirmDelete}
                                     className="flex-1 px-6 py-3.5 bg-gradient-to-r from-red-600 to-orange-600 border border-transparent rounded-xl text-white font-bold hover:from-red-700 hover:to-orange-700 active:scale-95 transition-all shadow-md text-sm"
                                 >
-                                    Yes, Remove
+                                    {__('Yes, Remove')}
                                 </button>
                             </div>
                         </div>

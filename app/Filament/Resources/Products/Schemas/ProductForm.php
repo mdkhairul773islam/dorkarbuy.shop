@@ -40,19 +40,25 @@ class ProductForm
                                     ->reactive()
                                     ->required(),
                             ]),
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('name')
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn ($set, ?string $state) => $set('slug', Str::slug($state))),
+                                TextInput::make('name_bn')
+                                    ->label('Name (Bangla)')
+                                    ->default(null),
                                 TextInput::make('slug')
                                     ->required()
                                     ->unique(ignoreRecord: true),
                             ]),
-                        Grid::make(3)
+                        Grid::make(4)
                             ->schema([
                                 TextInput::make('author')
+                                    ->default(null),
+                                TextInput::make('author_bn')
+                                    ->label('Author (Bangla)')
                                     ->default(null),
                                 TextInput::make('duration')
                                     ->label('Duration / Size')
@@ -153,7 +159,12 @@ class ProductForm
                             ->visible(fn ($get) => $get('look_inside_type') === 'pdf'),
 
                         RichEditor::make('look_inside_text')
-                            ->label('Read a Little (Text)')
+                            ->label('Read a Little (Text - English)')
+                            ->visible(fn ($get) => $get('look_inside_type') === 'text')
+                            ->columnSpanFull(),
+
+                        RichEditor::make('look_inside_text_bn')
+                            ->label('Read a Little (Text - Bangla)')
                             ->visible(fn ($get) => $get('look_inside_type') === 'text')
                             ->columnSpanFull(),
                     ])
@@ -178,22 +189,42 @@ class ProductForm
 
                 Section::make('Product Descriptions')
                     ->schema([
-                        Textarea::make('description')
-                            ->default(null)
-                            ->columnSpanFull()
-                            ->label('Summary'),
+                        Grid::make(2)
+                            ->schema([
+                                Textarea::make('description')
+                                    ->default(null)
+                                    ->label('Summary (English)')
+                                    ->rows(3),
+                                Textarea::make('description_bn')
+                                    ->default(null)
+                                    ->label('Summary (Bangla)')
+                                    ->rows(3),
+                            ])
+                            ->columnSpanFull(),
                         RichEditor::make('content')
                             ->default(null)
                             ->columnSpanFull()
-                            ->label('Additional Details'),
+                            ->label('Additional Details (English)'),
+                        RichEditor::make('content_bn')
+                            ->default(null)
+                            ->columnSpanFull()
+                            ->label('Additional Details (Bangla)'),
                         RichEditor::make('specification')
                             ->default(null)
                             ->columnSpanFull()
-                            ->label('Specification'),
+                            ->label('Specification (English)'),
+                        RichEditor::make('specification_bn')
+                            ->default(null)
+                            ->columnSpanFull()
+                            ->label('Specification (Bangla)'),
                         RichEditor::make('author_details')
                             ->default(null)
                             ->columnSpanFull()
-                            ->label('Author Details'),
+                            ->label('Author Details (English)'),
+                        RichEditor::make('author_details_bn')
+                            ->default(null)
+                            ->columnSpanFull()
+                            ->label('Author Details (Bangla)'),
                     ])
                     ->collapsible()
                     ->collapsed(true),

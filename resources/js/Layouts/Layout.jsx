@@ -206,7 +206,7 @@ export default function Layout({ children }) {
                             <div className="relative flex items-center" ref={searchRef}>
                                 <input
                                     type="text"
-                                    placeholder="বই, পোশাক, ইলেকট্রনিক্স বা কোর্স খুঁজুন..."
+                                    placeholder={__('Search placeholder')}
                                     className="w-full pl-4 pr-24 py-2 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:bg-white transition-all shadow-inner"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -221,7 +221,7 @@ export default function Layout({ children }) {
                                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
-                                    <span>Search</span>
+                                    <span>{__('Search')}</span>
                                 </button>
 
                                 {/* Autocomplete Suggestions Dropdown */}
@@ -233,11 +233,11 @@ export default function Layout({ children }) {
                                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                 </svg>
-                                                লোডিং হচ্ছে...
+                                                {__('Loading')}
                                             </div>
                                         ) : searchSuggestions.length === 0 ? (
                                             <div className="p-4 text-center text-xs text-gray-500">
-                                                কোনো প্রোডাক্ট পাওয়া যায়নি।
+                                                {__('No products found')}
                                             </div>
                                         ) : (
                                             <div className="divide-y divide-gray-100">
@@ -330,21 +330,21 @@ export default function Layout({ children }) {
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setUserMenuOpen(false)}
                                                 >
-                                                    Dashboard
+                                                    {__('Dashboard')}
                                                 </Link>
                                                 <Link
                                                     href="/orders"
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setUserMenuOpen(false)}
                                                 >
-                                                    My Orders
+                                                    {__('My Orders')}
                                                 </Link>
                                                 <Link
                                                     href="/profile"
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setUserMenuOpen(false)}
                                                 >
-                                                    Profile Settings
+                                                    {__('Profile Settings')}
                                                 </Link>
                                                 <div className="border-t border-gray-100"></div>
                                                 <Link
@@ -354,7 +354,7 @@ export default function Layout({ children }) {
                                                     className="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-gray-100"
                                                     onClick={() => setUserMenuOpen(false)}
                                                 >
-                                                    Logout
+                                                    {__('Logout')}
                                                 </Link>
                                             </div>
                                         </div>
@@ -363,13 +363,13 @@ export default function Layout({ children }) {
                             ) : (
                                 <div className="flex items-center space-x-2">
                                     <Link href="/login" className="text-sm font-semibold text-slate-700 hover:text-orange-600 py-1.5 px-3 transition-colors">
-                                        Login
+                                        {__('Login')}
                                     </Link>
                                     <Link 
                                         href="/register" 
                                         className="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-orange-700 transition-all shadow-sm active:scale-95"
                                     >
-                                        Sign Up
+                                        {__('Sign Up')}
                                     </Link>
                                 </div>
                             )}
@@ -385,37 +385,37 @@ export default function Layout({ children }) {
                                 href="/" 
                                 className={`text-xs sm:text-sm font-bold transition-colors ${url === '/' ? 'text-orange-400' : 'text-gray-100 hover:text-orange-400'}`}
                             >
-                                Home
+                                {__('Home')}
                             </Link>
                             <Link 
                                 href="/products" 
                                 className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products' ? 'text-orange-400 font-bold' : 'text-gray-100 hover:text-orange-400'}`}
                             >
-                                All Products
+                                {__('All Products')}
                             </Link>
                             <Link 
                                 href="/products?type=clothing" 
                                 className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=clothing' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
                             >
-                                Clothing
+                                {__('Clothing')}
                             </Link>
                             <Link 
                                 href="/products?type=electronics" 
                                 className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=electronics' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
                             >
-                                Electronics
+                                {__('Electronics')}
                             </Link>
                             <Link 
                                 href="/products?type=book" 
                                 className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=book' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
                             >
-                                Books
+                                {__('Books')}
                             </Link>
                             <Link 
                                 href="/products?type=course" 
                                 className={`text-xs sm:text-sm font-medium transition-colors ${url === '/products?type=course' ? 'text-orange-400 font-bold' : 'text-gray-200 hover:text-orange-400'}`}
                             >
-                                Courses
+                                {__('Courses')}
                             </Link>
                         </div>
                     </div>
@@ -434,7 +434,7 @@ export default function Layout({ children }) {
                             <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
-                            Home
+                            {__('Home')}
                         </Link>
                         <Link
                             href="/products"
@@ -444,7 +444,7 @@ export default function Layout({ children }) {
                             <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
-                            All Products
+                            {__('All Products')}
                         </Link>
                         <Link
                             href="/products?type=clothing"
@@ -454,7 +454,7 @@ export default function Layout({ children }) {
                             <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
-                            Clothing
+                            {__('Clothing')}
                         </Link>
                         <Link
                             href="/products?type=electronics"
@@ -464,7 +464,7 @@ export default function Layout({ children }) {
                             <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            Electronics
+                            {__('Electronics')}
                         </Link>
                         <Link
                             href="/products?type=book"
@@ -474,7 +474,7 @@ export default function Layout({ children }) {
                             <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
-                            Books
+                            {__('Books')}
                         </Link>
                         <Link
                             href="/products?type=course"
@@ -484,7 +484,7 @@ export default function Layout({ children }) {
                             <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
                             </svg>
-                            Courses
+                            {__('Courses')}
                         </Link>
                         {auth?.user ? (
                             <div className="pt-4 border-t border-gray-100 space-y-1">
@@ -505,7 +505,7 @@ export default function Layout({ children }) {
                                     <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                                     </svg>
-                                    Dashboard
+                                    {__('Dashboard')}
                                 </Link>
                                 <Link
                                     href="/orders"
@@ -515,7 +515,7 @@ export default function Layout({ children }) {
                                     <svg className="w-5 h-5 mr-3 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                                     </svg>
-                                    My Orders
+                                    {__('My Orders')}
                                 </Link>
                                 <Link
                                     href="/profile"
@@ -526,7 +526,7 @@ export default function Layout({ children }) {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    Profile Settings
+                                    {__('Profile Settings')}
                                 </Link>
                                 <div className="border-t border-gray-100 my-2 pt-2"></div>
                                 <Link
@@ -539,7 +539,7 @@ export default function Layout({ children }) {
                                     <svg className="w-5 h-5 mr-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>
-                                    Logout
+                                    {__('Logout')}
                                 </Link>
                             </div>
                         ) : (
@@ -549,14 +549,14 @@ export default function Layout({ children }) {
                                     className="flex-1 text-center py-2.5 text-base font-semibold text-orange-600 border border-orange-600 rounded-lg hover:bg-orange-50 transition-colors"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
-                                    Login
+                                    {__('Login')}
                                 </Link>
                                 <Link
                                     href="/register"
                                     className="flex-1 text-center py-2.5 text-base font-semibold text-white bg-orange-600 rounded-lg hover:bg-orange-700 transition-colors"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
-                                    Sign Up
+                                    {__('Sign Up')}
                                 </Link>
                             </div>
                         )}
@@ -576,7 +576,7 @@ export default function Layout({ children }) {
                     <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    <span className="text-[10px] font-bold">হোম / Home</span>
+                    <span className="text-[10px] font-bold">{__('Home mobile')}</span>
                 </Link>
 
                 <Link 
@@ -586,7 +586,7 @@ export default function Layout({ children }) {
                     <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                    <span className="text-[10px] font-bold">শপ / Shop</span>
+                    <span className="text-[10px] font-bold">{__('Shop mobile')}</span>
                 </Link>
 
                 <button 
@@ -601,7 +601,7 @@ export default function Layout({ children }) {
                             {cartItemsCount}
                         </span>
                     )}
-                    <span className="text-[10px] font-bold">কার্ট / Cart</span>
+                    <span className="text-[10px] font-bold">{__('Cart mobile')}</span>
                 </button>
 
                 {auth?.user ? (
@@ -612,7 +612,7 @@ export default function Layout({ children }) {
                         <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        <span className="text-[10px] font-bold">প্রোফাইল / Profile</span>
+                        <span className="text-[10px] font-bold">{__('Profile mobile')}</span>
                     </Link>
                 ) : (
                     <Link 
@@ -622,7 +622,7 @@ export default function Layout({ children }) {
                         <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        <span className="text-[10px] font-bold">লগইন / Login</span>
+                        <span className="text-[10px] font-bold">{__('Login mobile')}</span>
                     </Link>
                 )}
             </div>
@@ -684,38 +684,38 @@ export default function Layout({ children }) {
 
                         {/* Column 2: Customer Care */}
                         <div>
-                            <h4 className="text-white font-bold mb-4">About Us</h4>
+                            <h4 className="text-white font-bold mb-4">{__('About Us')}</h4>
                             <ul className="space-y-2 text-sm">
-                                {settings?.about_us && <li><Link href="/p/about_us" className="hover:text-white transition">About Us</Link></li>}
-                                <li><a href={`mailto:${settings?.contact_email || 'info@dorkarbuy.shop'}`} className="hover:text-white transition">Contact Us</a></li>
-                                {settings?.terms_conditions && <li><Link href="/p/terms_conditions" className="hover:text-white transition">Terms & Conditions</Link></li>}
-                                {settings?.privacy_policy && <li><Link href="/p/privacy_policy" className="hover:text-white transition">Privacy Policy</Link></li>}
-                                {settings?.refund_policy && <li><Link href="/p/refund_policy" className="hover:text-white transition">Refund Policy</Link></li>}
+                                {settings?.about_us && <li><Link href="/p/about_us" className="hover:text-white transition">{__('About Us')}</Link></li>}
+                                <li><a href={`mailto:${settings?.contact_email || 'info@dorkarbuy.shop'}`} className="hover:text-white transition">{__('Contact Us')}</a></li>
+                                {settings?.terms_conditions && <li><Link href="/p/terms_conditions" className="hover:text-white transition">{__('Terms & Conditions')}</Link></li>}
+                                {settings?.privacy_policy && <li><Link href="/p/privacy_policy" className="hover:text-white transition">{__('Privacy Policy')}</Link></li>}
+                                {settings?.refund_policy && <li><Link href="/p/refund_policy" className="hover:text-white transition">{__('Refund Policy')}</Link></li>}
                             </ul>
                         </div>
 
                         {/* Column 3: Categories */}
                         <div>
-                            <h4 className="text-white font-bold mb-4">Products</h4>
+                            <h4 className="text-white font-bold mb-4">{__('Products')}</h4>
                             <ul className="space-y-2 text-sm">
-                                <li><Link href="/products?type=clothing" className="hover:text-white transition">Clothing & Fashion</Link></li>
-                                <li><Link href="/products?type=electronics" className="hover:text-white transition">Electronics & Gadgets</Link></li>
-                                <li><Link href="/products?type=book" className="hover:text-white transition">Books & Publications</Link></li>
-                                <li><Link href="/products?type=course" className="hover:text-white transition">Courses & Digital</Link></li>
-                                <li><Link href="/products" className="hover:text-white transition">All Products</Link></li>
+                                <li><Link href="/products?type=clothing" className="hover:text-white transition">{__('Clothing & Fashion')}</Link></li>
+                                <li><Link href="/products?type=electronics" className="hover:text-white transition">{__('Electronics & Gadgets')}</Link></li>
+                                <li><Link href="/products?type=book" className="hover:text-white transition">{__('Books & Publications')}</Link></li>
+                                <li><Link href="/products?type=course" className="hover:text-white transition">{__('Courses & Digital')}</Link></li>
+                                <li><Link href="/products" className="hover:text-white transition">{__('All Products')}</Link></li>
                             </ul>
                             
-                            <h4 className="text-white font-bold mt-6 mb-4">Policies</h4>
+                            <h4 className="text-white font-bold mt-6 mb-4">{__('Policies')}</h4>
                             <ul className="space-y-2 text-sm">
-                                {settings?.shipping_policy && <li><Link href="/p/shipping_policy" className="hover:text-white transition">Shipping Policy</Link></li>}
-                                {settings?.payment_policy && <li><Link href="/p/payment_policy" className="hover:text-white transition">Payment Policy</Link></li>}
-                                {settings?.warranty_policy && <li><Link href="/p/warranty_policy" className="hover:text-white transition">Warranty Policy</Link></li>}
+                                {settings?.shipping_policy && <li><Link href="/p/shipping_policy" className="hover:text-white transition">{__('Shipping Policy')}</Link></li>}
+                                {settings?.payment_policy && <li><Link href="/p/payment_policy" className="hover:text-white transition">{__('Payment Policy')}</Link></li>}
+                                {settings?.warranty_policy && <li><Link href="/p/warranty_policy" className="hover:text-white transition">{__('Warranty Policy')}</Link></li>}
                             </ul>
                         </div>
 
                         {/* Column 4: Download & Social */}
                         <div>
-                            <h4 className="text-white font-bold mb-4">JOIN US</h4>
+                            <h4 className="text-white font-bold mb-4">{__('Join Us')}</h4>
                             <div className="flex flex-wrap gap-3 mb-6">
                                 {settings?.facebook_url && (
                                     <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition">
@@ -773,14 +773,14 @@ export default function Layout({ children }) {
                     {/* Bottom Bar */}
                     <div className="border-t border-gray-700 pt-8 mt-8">
                         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-                            <p>© {new Date().getFullYear()} {settings?.site_name || 'DorkarBuy'}. All rights reserved.</p>
+                            <p>© {new Date().getFullYear()} {settings?.site_name || 'DorkarBuy'}. {__('All rights reserved.')}</p>
                             <div className="flex items-center space-x-4 mt-4 md:mt-0">
-                                <span>Customer Care:</span>
+                                <span>{__('Customer Care')}:</span>
                                 <a href={`tel:${settings?.corporate_phone}`} className="hover:text-white font-medium">
-                                    {settings?.corporate_phone || '01914383816'} (Corporate)
+                                    {settings?.corporate_phone || '01914383816'} ({__('Corporate')})
                                 </a>
                                 <a href={`tel:${settings?.retailer_phone}`} className="hover:text-white font-medium">
-                                    {settings?.retailer_phone || '01914383816'} (Retailer)
+                                    {settings?.retailer_phone || '01914383816'} ({__('Retailer')})
                                 </a>
                             </div>
                         </div>

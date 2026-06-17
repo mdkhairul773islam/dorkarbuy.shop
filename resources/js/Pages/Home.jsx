@@ -3,11 +3,13 @@ import Layout from '../Layouts/Layout';
 import ProductCard from '../Components/ProductCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { useTranslation } from '../hooks/useTranslation';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 export default function Home({ auth, featuredProducts, categories, sliders }) {
+    const { __ } = useTranslation();
     const getCategoryIcon = (slug, name) => {
         const s = (slug || name || '').toLowerCase();
         if (s.includes('cloth') || s.includes('fashion') || s.includes('pant') || s.includes('shirt') || s.includes('wear')) return '👕';
@@ -19,7 +21,7 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
 
     return (
         <Layout>
-            <Head title="Home" />
+            <Head title={__('Home')} />
 
             {/* Hero Slider Section */}
             {sliders && sliders.length > 0 ? (
@@ -61,19 +63,19 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                                                 <div className="sm:text-center lg:text-left pt-10 md:pt-16">
                                                     {slider.title && (
                                                         <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl drop-shadow-lg">
-                                                            {slider.title}
+                                                            {__(slider.title)}
                                                         </h1>
                                                     )}
                                                     {slider.description && (
                                                         <p className="mt-4 text-base text-gray-200 sm:mt-6 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-6 md:text-xl lg:mx-0 drop-shadow-md min-h-[3rem]">
-                                                            {slider.description}
+                                                            {__(slider.description)}
                                                         </p>
                                                     )}
                                                     {slider.button_text && (
                                                         <div className="mt-10 sm:mt-12 md:mt-16 sm:flex sm:justify-center lg:justify-start">
                                                             <div className="rounded-md shadow hover:shadow-lg transition-shadow">
                                                                 <Link href={slider.button_link || '#'} className="w-full flex items-center justify-center px-8 py-3 lg:py-4 border border-transparent text-base font-bold rounded-md text-orange-600 bg-white hover:bg-orange-50 md:text-lg md:px-10 transition-colors">
-                                                                    {slider.button_text}
+                                                                    {__(slider.button_text)}
                                                                 </Link>
                                                             </div>
                                                         </div>
@@ -136,19 +138,19 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                         <div className="lg:grid lg:grid-cols-12 lg:gap-8 items-center">
                             <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-7 lg:text-left">
                                 <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
-                                    <span className="block">আপনার প্রয়োজনীয় সব</span>
-                                    <span className="block text-orange-500">এক জায়গায়</span>
+                                    <span className="block">{__('Your needs all')}</span>
+                                    <span className="block text-orange-500">{__('In one place')}</span>
                                 </h1>
                                 <p className="mt-4 text-base text-gray-300 sm:mt-5 sm:text-xl leading-relaxed">
-                                    দরকারবাই-এ রয়েছে পোশাক, গ্যাজেটস, বই এবং প্রিমিয়াম ডিজিটাল কোর্স। সেরা মানের পণ্য এবং দ্রুততম হোম ডেলিভারি সেবা।
+                                    {__('Hero fallback desc')}
                                 </p>
                                 <div className="mt-8 sm:max-w-lg sm:mx-auto sm:text-center lg:text-left lg:mx-0">
                                     <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                         <Link href="/products" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-bold rounded-lg text-white bg-orange-600 hover:bg-orange-700 shadow-lg transition-all transform hover:-translate-y-0.5">
-                                            সব প্রোডাক্ট দেখুন
+                                            {__('See All Products')}
                                         </Link>
                                         <Link href="/products?type=clothing" className="inline-flex items-center justify-center px-6 py-3 border border-slate-600 text-base font-bold rounded-lg text-white hover:bg-slate-800 transition-colors">
-                                            ফ্যাশন কালেকশন
+                                            {__('Fashion Collection')}
                                         </Link>
                                     </div>
                                 </div>
@@ -158,19 +160,19 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                                     <div className="grid grid-cols-2 gap-4">
                                         <Link href="/products?type=clothing" className="bg-slate-800/80 hover:bg-slate-700/80 p-6 rounded-xl text-center transition-all group hover:scale-[1.03]">
                                             <span className="text-4xl block mb-2 group-hover:scale-110 transition-transform">👕</span>
-                                            <span className="text-white font-bold block text-sm">Clothing</span>
+                                            <span className="text-white font-bold block text-sm">{__('Clothing')}</span>
                                         </Link>
                                         <Link href="/products?type=electronics" className="bg-slate-800/80 hover:bg-slate-700/80 p-6 rounded-xl text-center transition-all group hover:scale-[1.03]">
                                             <span className="text-4xl block mb-2 group-hover:scale-110 transition-transform">🎧</span>
-                                            <span className="text-white font-bold block text-sm">Electronics</span>
+                                            <span className="text-white font-bold block text-sm">{__('Electronics')}</span>
                                         </Link>
                                         <Link href="/products?type=book" className="bg-slate-800/80 hover:bg-slate-700/80 p-6 rounded-xl text-center transition-all group hover:scale-[1.03]">
                                             <span className="text-4xl block mb-2 group-hover:scale-110 transition-transform">📚</span>
-                                            <span className="text-white font-bold block text-sm">Books</span>
+                                            <span className="text-white font-bold block text-sm">{__('Books')}</span>
                                         </Link>
                                         <Link href="/products?type=course" className="bg-slate-800/80 hover:bg-slate-700/80 p-6 rounded-xl text-center transition-all group hover:scale-[1.03]">
                                             <span className="text-4xl block mb-2 group-hover:scale-110 transition-transform">💻</span>
-                                            <span className="text-white font-bold block text-sm">Courses</span>
+                                            <span className="text-white font-bold block text-sm">{__('Courses')}</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -183,8 +185,8 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
             {/* Categories */}
             <div className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                    <h2 className="text-3xl font-extrabold text-gray-900 mb-2">ক্যাটাগরি সমূহ</h2>
-                    <p className="text-gray-500 mb-8">ক্যাটাগরি নির্বাচন করে আপনার পছন্দের পণ্যটি সহজেই খুঁজে নিন।</p>
+                    <h2 className="text-3xl font-extrabold text-gray-900 mb-2">{__('Categories title')}</h2>
+                    <p className="text-gray-500 mb-8">{__('Categories desc')}</p>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         {categories?.map((category) => (
                             <Link
@@ -196,8 +198,8 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                                     {getCategoryIcon(category.slug, category.name)}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-lg font-bold text-gray-950 group-hover:text-orange-600 transition-colors">{category.name}</p>
-                                    <p className="text-sm text-gray-500 truncate mt-0.5">{category.description || 'পণ্য দেখতে ক্লিক করুন'}</p>
+                                    <p className="text-lg font-bold text-gray-950 group-hover:text-orange-600 transition-colors">{__(category.name)}</p>
+                                    <p className="text-sm text-gray-500 truncate mt-0.5">{category.description ? __(category.description) : __('Category click view')}</p>
                                 </div>
                             </Link>
                         ))}
@@ -210,11 +212,11 @@ export default function Home({ auth, featuredProducts, categories, sliders }) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="flex justify-between items-end mb-8">
                         <div>
-                            <h2 className="text-3xl font-extrabold text-gray-900">ফিচার্ড প্রোডাক্টস</h2>
-                            <p className="text-gray-500 mt-1">আমাদের সেরা এবং টপ রেটেড পণ্যগুলোর তালিকা।</p>
+                            <h2 className="text-3xl font-extrabold text-gray-900">{__('Featured Products title')}</h2>
+                            <p className="text-gray-500 mt-1">{__('Featured Products desc')}</p>
                         </div>
                         <Link href="/products" className="hidden sm:inline-flex items-center text-sm font-bold text-orange-600 hover:text-orange-700">
-                            সব প্রোডাক্ট দেখুন
+                            {__('See All Products')}
                             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/></svg>
                         </Link>
                     </div>

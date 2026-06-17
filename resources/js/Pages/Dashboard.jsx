@@ -1,9 +1,11 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 import Layout from '../Layouts/Layout';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function Dashboard() {
-    const { auth, flash } = usePage().props;
+    const { auth, flash, locale } = usePage().props;
+    const { __ } = useTranslation();
 
     useEffect(() => {
         if (typeof fbq !== 'undefined' && flash?.fb_event?.type === 'CompleteRegistration') {
@@ -14,7 +16,7 @@ export default function Dashboard() {
 
     return (
         <Layout>
-            <Head title="Dashboard" />
+            <Head title={__('Dashboard')} />
 
             <div className="bg-slate-50/50 min-h-screen">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -28,10 +30,10 @@ export default function Dashboard() {
                             </div>
                             <div className="ml-5">
                                 <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-                                    Welcome back, {auth.user.name}! 👋
+                                    {__('Welcome back')}, {auth.user.name}! 👋
                                 </h1>
                                 <p className="mt-2 text-slate-500 text-sm sm:text-base">
-                                    Manage your orders and account settings from your dashboard.
+                                    {__('Dashboard subtitle')}
                                 </p>
                             </div>
                         </div>
@@ -64,10 +66,10 @@ export default function Dashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                                My Orders
+                                                {__('My Orders')}
                                             </dt>
                                             <dd className="text-lg font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
-                                                View all orders
+                                                {__('View all orders')}
                                             </dd>
                                         </dl>
                                     </div>
@@ -103,10 +105,10 @@ export default function Dashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                                My Profile
+                                                {__('My Profile')}
                                             </dt>
                                             <dd className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">
-                                                Update info
+                                                {__('Update info')}
                                             </dd>
                                         </dl>
                                     </div>
@@ -142,10 +144,10 @@ export default function Dashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                                Browse Products
+                                                {__('Browse Products')}
                                             </dt>
                                             <dd className="text-lg font-bold text-slate-900 group-hover:text-violet-600 transition-colors">
-                                                Shop now
+                                                {__('Shop now')}
                                             </dd>
                                         </dl>
                                     </div>
@@ -167,7 +169,7 @@ export default function Dashboard() {
                                     </svg>
                                 </div>
                                 <h2 className="ml-4 text-xl font-bold text-white tracking-tight">
-                                    Account Information
+                                    {__('Account Information')}
                                 </h2>
                             </div>
                         </div>
@@ -184,7 +186,7 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                     <div className="ml-4 flex-1">
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Full Name</p>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Full Name')}</p>
                                         <p className="text-base font-bold text-slate-900 mt-0.5">{auth.user.name}</p>
                                     </div>
                                 </div>
@@ -199,7 +201,7 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                     <div className="ml-4 flex-1">
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Email Address</p>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Email Address')}</p>
                                         <p className="text-base font-bold text-slate-900 mt-0.5 break-all">{auth.user.email}</p>
                                     </div>
                                 </div>
@@ -214,9 +216,9 @@ export default function Dashboard() {
                                         </div>
                                     </div>
                                     <div className="ml-4 flex-1">
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Member Since</p>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Member Since')}</p>
                                         <p className="text-base font-bold text-slate-900 mt-0.5">
-                                            {new Date(auth.user.created_at).toLocaleDateString('en-US', { 
+                                            {new Date(auth.user.created_at).toLocaleDateString(locale === 'bn' ? 'bn-BD' : 'en-US', { 
                                                 year: 'numeric', 
                                                 month: 'long', 
                                                 day: 'numeric' 
@@ -235,7 +237,7 @@ export default function Dashboard() {
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
-                                    <span>Edit Profile Settings</span>
+                                    <span>{__('Edit Profile Settings')}</span>
                                 </Link>
                             </div>
                         </div>

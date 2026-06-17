@@ -19,20 +19,30 @@ class CategoryForm
             ->components([
                 Section::make('Category Details')
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('name')
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn ($set, ?string $state) => $set('slug', Str::slug($state))),
+                                TextInput::make('name_bn')
+                                    ->label('Name (Bangla)')
+                                    ->default(null),
                                 TextInput::make('slug')
                                     ->required()
                                     ->unique(ignoreRecord: true),
                             ]),
-                        Textarea::make('description')
-                            ->default(null)
-                            ->columnSpanFull()
-                            ->rows(3),
+                        Grid::make(2)
+                            ->schema([
+                                Textarea::make('description')
+                                    ->default(null)
+                                    ->rows(3),
+                                Textarea::make('description_bn')
+                                    ->label('Description (Bangla)')
+                                    ->default(null)
+                                    ->rows(3),
+                            ])
+                            ->columnSpanFull(),
                         Grid::make(2)
                             ->schema([
                                 FileUpload::make('image')

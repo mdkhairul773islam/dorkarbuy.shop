@@ -1,8 +1,10 @@
 import { Head, useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 import Layout from '../Layouts/Layout';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
+    const { __ } = useTranslation();
     const { data, setData, post, processing, errors } = useForm({
         customer_name: auth?.user?.name || '',
         customer_email: auth?.user?.email || '',
@@ -53,24 +55,24 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
 
     return (
         <Layout>
-            <Head title="Checkout" />
+            <Head title={__('Checkout')} />
 
             <div className="bg-slate-50/50 min-h-screen py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-8">Checkout</h1>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-8">{__('Checkout')}</h1>
 
                     <form onSubmit={handleSubmit} className="lg:grid lg:grid-cols-12 lg:gap-x-8">
                         {/* Shipping and Payment Forms */}
                         <div className="lg:col-span-7 space-y-6">
                             {/* Billing & Contact info card */}
                             <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                                <h2 className="text-xl font-bold text-slate-900 mb-6">Contact & Shipping Information</h2>
+                                <h2 className="text-xl font-bold text-slate-900 mb-6">{__('Contact & Shipping Information')}</h2>
 
                                 <div className="space-y-5">
                                     {/* Full Name */}
                                     <div>
                                         <label htmlFor="customer_name" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Full Name
+                                            {__('Full Name')}
                                         </label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -84,7 +86,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 value={data.customer_name}
                                                 onChange={(e) => setData('customer_name', e.target.value)}
                                                 className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm"
-                                                placeholder="John Doe"
+                                                placeholder={__('John Doe')}
                                                 required
                                             />
                                         </div>
@@ -101,7 +103,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                     {/* Email */}
                                     <div>
                                         <label htmlFor="customer_email" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Email Address <span className="text-slate-400 text-xs font-normal">(ঐচ্ছিক / Optional)</span>
+                                            {__('Email Address')} <span className="text-slate-400 text-xs font-normal">{__('(Optional)')}</span>
                                         </label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -115,7 +117,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 value={data.customer_email}
                                                 onChange={(e) => setData('customer_email', e.target.value)}
                                                 className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm"
-                                                placeholder="you@example.com"
+                                                placeholder={__('you@example.com')}
                                             />
                                         </div>
                                         {errors.customer_email && (
@@ -131,7 +133,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                     {/* Phone Number */}
                                     <div>
                                         <label htmlFor="customer_phone" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Phone Number
+                                            {__('Phone Number')}
                                         </label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -145,7 +147,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 value={data.customer_phone}
                                                 onChange={(e) => setData('customer_phone', e.target.value)}
                                                 className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm"
-                                                placeholder="+880 1234-567890"
+                                                placeholder={__('+880 1234-567890')}
                                                 required
                                             />
                                         </div>
@@ -162,7 +164,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                     {/* Delivery Address */}
                                     <div>
                                         <label htmlFor="customer_address" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Delivery Address
+                                            {__('Delivery Address')}
                                         </label>
                                         <div className="relative">
                                             <div className="absolute top-3.5 left-0 pl-3.5 pointer-events-none">
@@ -177,7 +179,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 value={data.customer_address}
                                                 onChange={(e) => setData('customer_address', e.target.value)}
                                                 className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm resize-none"
-                                                placeholder="House/Flat, Road, Area, City"
+                                                placeholder={__('House/Flat, Road, Area, City')}
                                                 required
                                             />
                                         </div>
@@ -194,7 +196,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                     {/* Payment Method */}
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-3">
-                                            পেমেন্ট পদ্ধতি সিলেক্ট করুন / Select Payment Method
+                                            {__('Select Payment Method')}
                                         </label>
                                         
                                         <div className="grid grid-cols-2 gap-3.5">
@@ -245,7 +247,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                         
                                                         <div className="mt-3">
                                                             <span className="text-sm font-extrabold text-slate-900 block leading-tight">
-                                                                {method.name}
+                                                                {__(method.name)}
                                                             </span>
                                                         </div>
                                                     </button>
@@ -268,10 +270,10 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                                 <div className="text-xs font-semibold text-orange-900 leading-relaxed">
-                                                    {paymentMethods.find(m => m.code === data.payment_method).description}
+                                                    {__(paymentMethods.find(m => m.code === data.payment_method).description)}
                                                     {paymentMethods.find(m => m.code === data.payment_method).config?.merchant_number && (
                                                         <span className="block mt-1 font-bold text-slate-800">
-                                                            মার্চেন্ট নাম্বার: {paymentMethods.find(m => m.code === data.payment_method).config.merchant_number}
+                                                            {__('Merchant Number:')} {paymentMethods.find(m => m.code === data.payment_method).config.merchant_number}
                                                         </span>
                                                     )}
                                                 </div>
@@ -282,7 +284,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                     {/* Order Notes */}
                                     <div>
                                         <label htmlFor="notes" className="block text-sm font-semibold text-slate-700 mb-2">
-                                            Order Notes <span className="text-slate-400 font-normal">(Optional)</span>
+                                            {__('Order Notes')} <span className="text-slate-400 font-normal">{__('(Optional)')}</span>
                                         </label>
                                         <div className="relative">
                                             <div className="absolute top-3.5 left-0 pl-3.5 pointer-events-none">
@@ -296,7 +298,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 value={data.notes}
                                                 onChange={(e) => setData('notes', e.target.value)}
                                                 className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm resize-none"
-                                                placeholder="Any special instructions or delivery preferences?"
+                                                placeholder={__('Any special instructions or delivery preferences?')}
                                             />
                                         </div>
                                     </div>
@@ -307,7 +309,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                         {/* Order Summary & Placement */}
                         <div className="mt-8 lg:mt-0 lg:col-span-5">
                             <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 shadow-sm">
-                                <h2 className="text-xl font-bold text-slate-900 mb-6">Order Summary</h2>
+                                <h2 className="text-xl font-bold text-slate-900 mb-6">{__('Order Summary')}</h2>
 
                                 <ul className="divide-y divide-slate-100 mb-6 max-h-[350px] overflow-y-auto pr-1">
                                     {cart?.items?.map((item) => (
@@ -317,9 +319,9 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                     {item.product?.name}
                                                 </h4>
                                                 <div className="flex flex-wrap gap-2 mt-2">
-                                                    <span className="text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-md px-2 py-0.5">Qty: {item.quantity}</span>
+                                                    <span className="text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-md px-2 py-0.5">{__('Qty:')} {item.quantity}</span>
                                                     {item.size && (
-                                                        <span className="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-100 rounded-md px-2 py-0.5">Size: {item.size}</span>
+                                                        <span className="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-100 rounded-md px-2 py-0.5">{__('Size:')} {item.size}</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -332,7 +334,7 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
 
                                 <div className="border-t border-slate-100 pt-5 mt-5">
                                     <div className="flex justify-between items-center text-slate-900">
-                                        <span className="text-base font-bold">Total Payable</span>
+                                        <span className="text-base font-bold">{__('Total Payable')}</span>
                                         <span className="text-2xl font-black text-orange-600">৳{total.toFixed(2)}</span>
                                     </div>
                                 </div>
@@ -348,14 +350,14 @@ export default function Checkout({ auth, cart, paymentMethods, fbEventId }) {
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
-                                            <span>Processing Order...</span>
+                                            <span>{__('Processing Order...')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <span>Place Order</span>
+                                            <span>{__('Place Order')}</span>
                                             <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>

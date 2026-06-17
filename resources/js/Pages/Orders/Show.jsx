@@ -1,8 +1,10 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 import Layout from '../../Layouts/Layout';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function ShowOrder({ auth, order }) {
+    const { __, locale } = useTranslation();
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -35,7 +37,7 @@ export default function ShowOrder({ auth, order }) {
 
     return (
         <Layout>
-            <Head title={`Order ${order.order_number}`} />
+            <Head title={`${__('Order')} ${order.order_number}`} />
 
             <div className="bg-slate-50/50 min-h-screen py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +46,7 @@ export default function ShowOrder({ auth, order }) {
                             <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
-                            Back to Orders
+                            {__('Back to Orders')}
                         </Link>
                     </div>
 
@@ -53,43 +55,43 @@ export default function ShowOrder({ auth, order }) {
                         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                             <div className="px-6 py-5 border-b border-slate-100 sm:px-8">
                                 <h3 className="text-lg font-bold text-slate-900">
-                                    Order details for #{order.order_number}
+                                    {__('Order details for')} #{order.order_number}
                                 </h3>
                                 <p className="mt-1 text-sm text-slate-500">
-                                    Placed on {new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                    {__('Placed on')} {new Date(order.created_at).toLocaleDateString(locale === 'bn' ? 'bn-BD' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                                 </p>
                             </div>
                             <div className="px-6 py-5 sm:px-8">
                                 <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Status</dt>
+                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Status')}</dt>
                                         <dd className="mt-1">
                                             <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full capitalize border ${getStatusColor(order.status)}`}>
-                                                {order.status}
+                                                {__(order.status)}
                                             </span>
                                         </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Customer Name</dt>
+                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Customer Name')}</dt>
                                         <dd className="mt-1 text-sm font-bold text-slate-900">
                                             {order.customer_name}
                                         </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Email Address</dt>
+                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Email Address')}</dt>
                                         <dd className="mt-1 text-sm font-bold text-slate-900 break-all">
                                             {order.customer_email}
                                         </dd>
                                     </div>
                                     <div>
-                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Phone Number</dt>
+                                        <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Phone Number')}</dt>
                                         <dd className="mt-1 text-sm font-bold text-slate-900">
                                             {order.customer_phone}
                                         </dd>
                                     </div>
                                     {order.customer_address && (
                                         <div className="md:col-span-2">
-                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Delivery Address</dt>
+                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Delivery Address')}</dt>
                                             <dd className="mt-1 text-sm font-bold text-slate-900">
                                                 {order.customer_address}
                                             </dd>
@@ -102,7 +104,7 @@ export default function ShowOrder({ auth, order }) {
                         {/* Order Items */}
                         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                             <div className="px-6 py-5 border-b border-slate-100 sm:px-8">
-                                <h3 className="text-lg font-bold text-slate-900">Order Items</h3>
+                                <h3 className="text-lg font-bold text-slate-900">{__('Order Items')}</h3>
                             </div>
                             <div>
                                 <ul className="divide-y divide-slate-100">
@@ -118,7 +120,7 @@ export default function ShowOrder({ auth, order }) {
                                                         />
                                                     ) : (
                                                         <div className="h-16 w-16 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
-                                                            <span className="text-xs text-slate-400">No image</span>
+                                                            <span className="text-xs text-slate-400">{__('No image')}</span>
                                                         </div>
                                                     )}
                                                     <div className="ml-4">
@@ -128,9 +130,9 @@ export default function ShowOrder({ auth, order }) {
                                                         <div className="flex flex-wrap gap-2 mt-1.5">
                                                             <span className="text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-md px-2 py-0.5 capitalize">{item.product_type}</span>
                                                             {item.size && (
-                                                                <span className="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-100 rounded-md px-2 py-0.5">Size: {item.size}</span>
+                                                                <span className="text-[10px] font-bold text-orange-700 bg-orange-50 border border-orange-100 rounded-md px-2 py-0.5">{__('Size:')} {item.size}</span>
                                                             )}
-                                                            <span className="text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-md px-2 py-0.5">Qty: {item.quantity}</span>
+                                                            <span className="text-[10px] font-bold text-slate-500 bg-slate-50 border border-slate-100 rounded-md px-2 py-0.5">{__('Qty:')} {item.quantity}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -148,7 +150,7 @@ export default function ShowOrder({ auth, order }) {
                         {order.payment && (
                             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
                                 <div className="px-6 py-5 border-b border-slate-100 sm:px-8 flex flex-wrap justify-between items-center gap-4">
-                                    <h3 className="text-lg font-bold text-slate-900">Payment Information</h3>
+                                    <h3 className="text-lg font-bold text-slate-900">{__('Payment Information')}</h3>
                                     {order.payment.status === 'pending' && (
                                         <Link
                                             href={`/payment/${order.id}`}
@@ -157,28 +159,28 @@ export default function ShowOrder({ auth, order }) {
                                             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                                             </svg>
-                                            <span>Complete Payment</span>
+                                            <span>{__('Complete Payment')}</span>
                                         </Link>
                                     )}
                                 </div>
                                 <div>
                                     <dl className="px-6 py-5 sm:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                                         <div>
-                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Payment Method</dt>
+                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Payment Method')}</dt>
                                             <dd className="mt-1 text-sm font-bold text-slate-900 uppercase">
-                                                {order.payment.payment_method}
+                                                {__(order.payment.payment_method)}
                                             </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Payment Status</dt>
+                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Payment Status')}</dt>
                                             <dd className="mt-1">
                                                 <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full capitalize border ${getPaymentStatusColor(order.payment.status)}`}>
-                                                    {order.payment.status}
+                                                    {__(order.payment.status)}
                                                 </span>
                                             </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">Transaction ID</dt>
+                                            <dt className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Transaction ID')}</dt>
                                             <dd className="mt-1 text-sm font-bold text-slate-900 break-all">
                                                 {order.payment.transaction_id || 'N/A'}
                                             </dd>
@@ -193,7 +195,7 @@ export default function ShowOrder({ auth, order }) {
                                                 </div>
                                                 <div className="ml-3">
                                                     <p className="text-sm font-semibold text-amber-800">
-                                                        Your payment is pending. Please complete the payment to process your order.
+                                                        {__('Your payment is pending. Please complete the payment to process your order.')}
                                                     </p>
                                                 </div>
                                             </div>
@@ -206,30 +208,30 @@ export default function ShowOrder({ auth, order }) {
                         {/* Order Summary */}
                         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden max-w-xl ml-auto">
                             <div className="px-6 py-5 border-b border-slate-100 sm:px-8">
-                                <h3 className="text-lg font-bold text-slate-900">Order Summary</h3>
+                                <h3 className="text-lg font-bold text-slate-900">{__('Order Summary')}</h3>
                             </div>
                             <div className="px-6 py-5 sm:px-8">
                                 <dl className="space-y-3">
                                     <div className="flex justify-between items-center text-sm">
-                                        <dt className="font-semibold text-slate-500">Subtotal</dt>
+                                        <dt className="font-semibold text-slate-500">{__('Subtotal')}</dt>
                                         <dd className="font-bold text-slate-900">
                                             ৳{parseFloat(order.subtotal).toFixed(2)}
                                         </dd>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
-                                        <dt className="font-semibold text-slate-500">Tax</dt>
+                                        <dt className="font-semibold text-slate-500">{__('Tax')}</dt>
                                         <dd className="font-bold text-slate-900">
                                             ৳{parseFloat(order.tax).toFixed(2)}
                                         </dd>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
-                                        <dt className="font-semibold text-slate-500">Discount</dt>
+                                        <dt className="font-semibold text-slate-500">{__('Discount')}</dt>
                                         <dd className="font-bold text-slate-900">
                                             ৳{parseFloat(order.discount).toFixed(2)}
                                         </dd>
                                     </div>
                                     <div className="flex justify-between items-center pt-3 border-t border-slate-100">
-                                        <dt className="text-base font-bold text-slate-900">Total</dt>
+                                        <dt className="text-base font-bold text-slate-900">{__('Total')}</dt>
                                         <dd className="text-xl font-black text-orange-600">
                                             ৳{parseFloat(order.total).toFixed(2)}
                                         </dd>

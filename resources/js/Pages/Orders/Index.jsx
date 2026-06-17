@@ -1,7 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
 import Layout from '../../Layouts/Layout';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function OrdersIndex({ orders }) {
+    const { __, locale } = useTranslation();
     const getStatusColor = (status) => {
         const colors = {
             pending: 'bg-amber-100 text-amber-800 border-amber-200/50',
@@ -56,7 +58,7 @@ export default function OrdersIndex({ orders }) {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
+        return date.toLocaleDateString(locale === 'bn' ? 'bn-BD' : 'en-US', { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric',
@@ -67,14 +69,14 @@ export default function OrdersIndex({ orders }) {
 
     return (
         <Layout>
-            <Head title="My Orders" />
+            <Head title={__('My Orders')} />
 
             <div className="bg-slate-50/50 min-h-screen py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-8">
-                        <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">My Orders</h1>
-                        <p className="text-sm text-slate-500">Track and manage your order history</p>
+                        <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{__('My Orders')}</h1>
+                        <p className="text-sm text-slate-500">{__('Track and manage your order history')}</p>
                     </div>
 
                     {orders?.data?.length === 0 ? (
@@ -95,9 +97,9 @@ export default function OrdersIndex({ orders }) {
                                         />
                                     </svg>
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 mb-2">No orders yet</h3>
+                                <h3 className="text-xl font-bold text-slate-900 mb-2">{__('No orders yet')}</h3>
                                 <p className="text-sm text-slate-500 mb-8 max-w-sm mx-auto">
-                                    Looks like you haven't placed any orders yet. Start exploring our collection!
+                                    {__("Looks like you haven't placed any orders yet. Start exploring our collection!")}
                                 </p>
                                 <Link
                                     href="/products"
@@ -106,7 +108,7 @@ export default function OrdersIndex({ orders }) {
                                     <svg className="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                     </svg>
-                                    Start Shopping
+                                    {__('Start Shopping')}
                                 </Link>
                             </div>
                         </div>
@@ -130,7 +132,7 @@ export default function OrdersIndex({ orders }) {
                                                 </div>
                                                 <div>
                                                     <h3 className="text-base font-bold text-slate-900">
-                                                        Order #{order.order_number}
+                                                        {__('Order')} #{order.order_number}
                                                     </h3>
                                                     <p className="text-xs text-slate-500 flex items-center mt-1">
                                                         <svg className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -147,7 +149,7 @@ export default function OrdersIndex({ orders }) {
                                                     )}`}
                                                 >
                                                     {getStatusIcon(order.status)}
-                                                    <span className="ml-1.5">{order.status}</span>
+                                                    <span className="ml-1.5">{__(order.status)}</span>
                                                 </span>
                                                 {order.payment && (
                                                     <span
@@ -158,7 +160,7 @@ export default function OrdersIndex({ orders }) {
                                                         <svg className="h-3.5 w-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                                                         </svg>
-                                                        {order.payment.status}
+                                                        {__(order.payment.status)}
                                                     </span>
                                                 )}
                                             </div>
@@ -190,7 +192,7 @@ export default function OrdersIndex({ orders }) {
                                                             {item.product_name}
                                                         </p>
                                                         <p className="text-xs text-slate-500 mt-1">
-                                                            Qty: {item.quantity} × ৳{parseFloat(item.price).toFixed(2)}
+                                                            {__('Qty:')} {item.quantity} × ৳{parseFloat(item.price).toFixed(2)}
                                                         </p>
                                                     </div>
                                                     <div className="flex-shrink-0">
@@ -202,7 +204,7 @@ export default function OrdersIndex({ orders }) {
                                             ))}
                                             {order.items?.length > 2 && (
                                                 <div className="text-xs text-orange-600 font-bold pl-20">
-                                                    +{order.items.length - 2} more item{order.items.length - 2 !== 1 ? 's' : ''}
+                                                    +{order.items.length - 2} {order.items.length - 2 !== 1 ? __('more items') : __('more item')}
                                                 </div>
                                             )}
                                         </div>
@@ -213,14 +215,14 @@ export default function OrdersIndex({ orders }) {
                                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                             <div className="flex items-center space-x-6">
                                                 <div>
-                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Items</p>
+                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Items')}</p>
                                                     <p className="text-base font-bold text-slate-900 mt-0.5">
                                                         {order.items?.length}
                                                     </p>
                                                 </div>
                                                 <div className="h-8 w-px bg-slate-200"></div>
                                                 <div>
-                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Amount</p>
+                                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{__('Total Amount')}</p>
                                                     <p className="text-lg font-black text-orange-600 mt-0.5">
                                                         ৳{parseFloat(order.total).toFixed(2)}
                                                     </p>
@@ -235,7 +237,7 @@ export default function OrdersIndex({ orders }) {
                                                         <svg className="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                                                         </svg>
-                                                        Pay Now
+                                                        {__('Pay Now')}
                                                     </Link>
                                                 )}
                                                 <Link
@@ -246,7 +248,7 @@ export default function OrdersIndex({ orders }) {
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                     </svg>
-                                                    View Details
+                                                    {__('View Details')}
                                                 </Link>
                                             </div>
                                         </div>

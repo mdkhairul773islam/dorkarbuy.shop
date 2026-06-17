@@ -2,11 +2,13 @@ import { usePage, router } from '@inertiajs/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { closeDrawer } from '../Redux/cartSlice';
 import { useEffect } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function CartDrawer() {
     const dispatch = useDispatch();
     const { isDrawerOpen } = useSelector((state) => state.cart);
-    const { cart } = usePage().props;
+    const { cart, locale } = usePage().props;
+    const { __ } = useTranslation();
 
     // Close drawer on escape key press
     useEffect(() => {
@@ -28,7 +30,7 @@ export default function CartDrawer() {
         const newQty = increment ? currentQty + 1 : currentQty - 1;
         if (newQty < 1) return;
         if (increment && newQty > stock) {
-            alert('⚠️ Insufficient stock available!');
+            alert('⚠️ ' + __('Insufficient stock available!'));
             return;
         }
 
@@ -39,7 +41,7 @@ export default function CartDrawer() {
     };
 
     const handleRemoveItem = (itemId) => {
-        if (confirm('Are you sure you want to remove this item?')) {
+        if (confirm(__('Are you sure you want to remove this item?'))) {
             router.delete(`/cart/${itemId}`, {
                 preserveScroll: true,
                 preserveState: true
@@ -70,7 +72,7 @@ export default function CartDrawer() {
                         <svg className="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
-                        <h2 className="text-lg font-black text-gray-900 tracking-tight">আপনার শপিং ব্যাগ</h2>
+                        <h2 className="text-lg font-black text-gray-900 tracking-tight">{__('Your Shopping Bag')}</h2>
                         {cartItems.length > 0 && (
                             <span className="bg-orange-100 text-orange-800 text-xs font-black px-2 py-0.5 rounded-full">
                                 {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
@@ -97,14 +99,14 @@ export default function CartDrawer() {
                                 </svg>
                             </div>
                             <div>
-                                <h3 className="text-base font-bold text-gray-800">শপিং ব্যাগটি খালি</h3>
-                                <p className="text-xs text-gray-400 mt-1 max-w-[200px] mx-auto">ব্যাগে কিছু প্রোডাক্ট যোগ করুন এবং আবার চেষ্টা করুন!</p>
+                                <h3 className="text-base font-bold text-gray-800">{__('Your Shopping Bag is empty')}</h3>
+                                <p className="text-xs text-gray-400 mt-1 max-w-[200px] mx-auto">{__('Add some products to your bag and try again!')}</p>
                             </div>
                             <button
                                 onClick={() => dispatch(closeDrawer())}
                                 className="px-5 py-2 bg-orange-600 text-white text-xs font-bold rounded-xl hover:bg-orange-700 transition-colors shadow-sm"
                             >
-                                শপিং করুন
+                                {__('Start Shopping')}
                             </button>
                         </div>
                     ) : (
@@ -131,7 +133,7 @@ export default function CartDrawer() {
                                         </h4>
                                         {item.size && (
                                             <span className="inline-block mt-1 bg-gray-100 text-gray-600 text-[10px] px-1.5 py-0.5 rounded font-medium">
-                                                Size: {item.size}
+                                                {__('Size:')} {item.size}
                                             </span>
                                         )}
                                     </div>
@@ -184,11 +186,11 @@ export default function CartDrawer() {
                     <div className="p-5 border-t border-gray-150 bg-gray-50/50 space-y-4">
                         <div className="space-y-1.5">
                             <div className="flex justify-between text-xs text-gray-500">
-                                <span>সর্বমোট আইটেম</span>
-                                <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)} টি</span>
+                                <span>{__('Total Items')}</span>
+                                <span>{cartItems.reduce((sum, item) => sum + item.quantity, 0)}{locale === 'bn' ? ' টি' : ''}</span>
                             </div>
                             <div className="flex justify-between text-base font-black text-gray-900 pt-1 border-t border-gray-100">
-                                <span>মোট মূল্য</span>
+                                <span>{__('Total Price')}</span>
                                 <span className="text-orange-600">৳{subtotal.toFixed(2)}</span>
                             </div>
                         </div>
@@ -198,13 +200,13 @@ export default function CartDrawer() {
                                 onClick={() => dispatch(closeDrawer())}
                                 className="w-full py-3 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-xl hover:bg-gray-50 transition-colors"
                             >
-                                শপিং চালিয়ে যান
+                                {__('Continue Shopping')}
                             </button>
                             <a
                                 href="/checkout"
                                 className="w-full py-3 bg-orange-600 text-white text-xs font-black rounded-xl hover:bg-orange-700 transition-colors text-center shadow-md shadow-orange-500/10 block"
                             >
-                                চেকআউট করুন
+                                {__('Proceed to Checkout')}
                             </a>
                         </div>
                     </div>

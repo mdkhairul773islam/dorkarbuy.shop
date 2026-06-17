@@ -1,7 +1,9 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import Layout from '../Layouts/Layout';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function Payment({ auth, order, paymentMethod }) {
+    const { __ } = useTranslation();
     const { data, setData, post, processing } = useForm({
         transaction_reference: '',
     });
@@ -18,13 +20,13 @@ export default function Payment({ auth, order, paymentMethod }) {
             case 'bkash':
                 return {
                     steps: [
-                        'Open your bKash app',
-                        'Select "Send Money"',
-                        `Enter merchant number: ${merchantNumber}`,
-                        `Enter amount: ৳${order.total}`,
-                        'Enter your PIN and confirm',
-                        'Note down the transaction ID',
-                        'Enter the transaction ID below and click "Confirm Payment"'
+                        __('Open your bKash app'),
+                        __('Select "Send Money"'),
+                        `${__('Enter merchant number:')} ${merchantNumber}`,
+                        `${__('Enter amount:')} ৳${order.total}`,
+                        __('Enter your PIN and confirm'),
+                        __('Note down the transaction ID'),
+                        __('Enter the transaction ID below and click "Confirm Payment"')
                     ],
                     color: 'bg-pink-50 border-pink-100',
                     iconColor: 'text-pink-600'
@@ -32,13 +34,13 @@ export default function Payment({ auth, order, paymentMethod }) {
             case 'rocket':
                 return {
                     steps: [
-                        'Dial *322# from your mobile',
-                        'Select "Payment"',
-                        `Enter merchant number: ${merchantNumber}`,
-                        `Enter amount: ৳${order.total}`,
-                        'Enter your PIN and confirm',
-                        'Note down the transaction ID',
-                        'Enter the transaction ID below and click "Confirm Payment"'
+                        __('Dial *322# from your mobile'),
+                        __('Select "Payment"'),
+                        `${__('Enter merchant number:')} ${merchantNumber}`,
+                        `${__('Enter amount:')} ৳${order.total}`,
+                        __('Enter your PIN and confirm'),
+                        __('Note down the transaction ID'),
+                        __('Enter the transaction ID below and click "Confirm Payment"')
                     ],
                     color: 'bg-purple-50 border-purple-100',
                     iconColor: 'text-purple-600'
@@ -46,13 +48,13 @@ export default function Payment({ auth, order, paymentMethod }) {
             case 'nagad':
                 return {
                     steps: [
-                        'Open your Nagad app',
-                        'Select "Send Money"',
-                        `Enter merchant number: ${merchantNumber}`,
-                        `Enter amount: ৳${order.total}`,
-                        'Enter your PIN and confirm',
-                        'Note down the transaction ID',
-                        'Enter the transaction ID below and click "Confirm Payment"'
+                        __('Open your Nagad app'),
+                        __('Select "Send Money"'),
+                        `${__('Enter merchant number:')} ${merchantNumber}`,
+                        `${__('Enter amount:')} ৳${order.total}`,
+                        __('Enter your PIN and confirm'),
+                        __('Note down the transaction ID'),
+                        __('Enter the transaction ID below and click "Confirm Payment"')
                     ],
                     color: 'bg-orange-50 border-orange-100',
                     iconColor: 'text-orange-600'
@@ -60,18 +62,18 @@ export default function Payment({ auth, order, paymentMethod }) {
             case 'cash':
                 return {
                     steps: [
-                        'Your order has been placed successfully',
-                        'You will pay with cash when you receive your order',
-                        'Our delivery person will contact you soon',
-                        'Please keep the exact amount ready',
-                        'Click "Confirm Order" below to proceed'
+                        __('Your order has been placed successfully'),
+                        __('You will pay with cash when you receive your order'),
+                        __('Our delivery person will contact you soon'),
+                        __('Please keep the exact amount ready'),
+                        __('Click "Confirm Order" below to proceed')
                     ],
                     color: 'bg-green-50 border-green-100',
                     iconColor: 'text-green-600'
                 };
             default:
                 return {
-                    steps: ['Complete your payment and confirm below'],
+                    steps: [__('Complete your payment and confirm below')],
                     color: 'bg-slate-50 border-slate-100',
                     iconColor: 'text-slate-600'
                 };
@@ -83,7 +85,7 @@ export default function Payment({ auth, order, paymentMethod }) {
 
     return (
         <Layout>
-            <Head title="Complete Payment" />
+            <Head title={__('Complete Payment')} />
 
             <div className="min-h-screen bg-slate-50/50 py-12">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,10 +101,10 @@ export default function Payment({ auth, order, paymentMethod }) {
                             </div>
                             <div className="ml-4">
                                 <h3 className="text-lg font-bold text-emerald-900">
-                                    Order Placed Successfully!
+                                    {__('Order Placed Successfully!')}
                                 </h3>
                                 <div className="mt-1 text-sm text-emerald-700">
-                                    <p>Order Number: <span className="font-extrabold text-emerald-900 text-base">#{order.order_number}</span></p>
+                                    <p>{__('Order Number:')} <span className="font-extrabold text-emerald-900 text-base">#{order.order_number}</span></p>
                                 </div>
                             </div>
                         </div>
@@ -112,10 +114,10 @@ export default function Payment({ auth, order, paymentMethod }) {
                     <div className="bg-white shadow-sm rounded-2xl overflow-hidden mb-8 border border-slate-100">
                         <div className="px-6 py-5 bg-gradient-to-r from-orange-600 to-amber-500">
                             <h2 className="text-xl font-bold text-white tracking-tight">
-                                {isCashOnDelivery ? '📦 Order Confirmation' : '💳 Complete Your Payment'}
+                                {isCashOnDelivery ? __('Order Confirmation Badge') : __('Complete Your Payment Badge')}
                             </h2>
                             <p className="mt-1 text-sm text-orange-50">
-                                Payment Method: <span className="font-extrabold text-white">{paymentMethod?.name}</span>
+                                {__('Payment Method:')} <span className="font-extrabold text-white">{paymentMethod?.name ? __(paymentMethod.name) : ''}</span>
                             </p>
                         </div>
 
@@ -131,7 +133,7 @@ export default function Payment({ auth, order, paymentMethod }) {
                                     </div>
                                     <div className="ml-4 flex-1">
                                         <h3 className="text-base font-bold text-slate-900 mb-3">
-                                            {isCashOnDelivery ? '📋 Instructions:' : '👉 Follow these steps:'}
+                                            {isCashOnDelivery ? __('Instructions:') : __('Follow these steps:')}
                                         </h3>
                                         <div className="mt-2">
                                             <ol className="space-y-2.5">
@@ -152,20 +154,20 @@ export default function Payment({ auth, order, paymentMethod }) {
 
                         {/* Order Summary */}
                         <div className="px-6 py-5 bg-slate-50/50">
-                            <h3 className="text-base font-bold text-slate-900 mb-4">Order Summary</h3>
+                            <h3 className="text-base font-bold text-slate-900 mb-4">{__('Order Summary')}</h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-slate-500 font-semibold">Subtotal:</span>
+                                    <span className="text-slate-500 font-semibold">{__('Subtotal:')}</span>
                                     <span className="font-bold text-slate-900">৳{parseFloat(order.subtotal).toFixed(2)}</span>
                                 </div>
                                 {order.discount > 0 && (
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-slate-500 font-semibold">Discount:</span>
+                                        <span className="text-slate-500 font-semibold">{__('Discount:')}</span>
                                         <span className="font-bold text-emerald-600">-৳{parseFloat(order.discount).toFixed(2)}</span>
                                     </div>
                                 )}
                                 <div className="border-t border-slate-200 pt-3 flex justify-between">
-                                    <span className="text-base font-bold text-slate-900">Total payable amount:</span>
+                                    <span className="text-base font-bold text-slate-900">{__('Total payable amount:')}</span>
                                     <span className="text-lg font-black text-orange-600">৳{parseFloat(order.total).toFixed(2)}</span>
                                 </div>
                             </div>
@@ -178,7 +180,7 @@ export default function Payment({ auth, order, paymentMethod }) {
                             {!isCashOnDelivery && (
                                 <div>
                                     <label htmlFor="transaction_reference" className="block text-sm font-bold text-slate-700 mb-2">
-                                        Transaction ID / Reference Number
+                                        {__('Transaction ID / Reference Number')}
                                     </label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -192,7 +194,7 @@ export default function Payment({ auth, order, paymentMethod }) {
                                             value={data.transaction_reference}
                                             onChange={(e) => setData('transaction_reference', e.target.value)}
                                             className="block w-full pl-11 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 hover:border-slate-300 text-sm"
-                                            placeholder="e.g., TRX123456789"
+                                            placeholder={__('e.g., TRX123456789')}
                                             required={!isCashOnDelivery}
                                         />
                                     </div>
@@ -200,7 +202,7 @@ export default function Payment({ auth, order, paymentMethod }) {
                                         <svg className="w-4 h-4 mr-1.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <span>Please enter the transaction ID you received after payment</span>
+                                        <span>{__('Please enter the transaction ID you received after payment')}</span>
                                     </p>
                                 </div>
                             )}
@@ -214,7 +216,7 @@ export default function Payment({ auth, order, paymentMethod }) {
                                         <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        Pay Later
+                                        {__('Pay Later')}
                                     </Link>
                                 )}
                                 <button
@@ -228,14 +230,14 @@ export default function Payment({ auth, order, paymentMethod }) {
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
-                                            <span>Confirming...</span>
+                                            <span>{__('Confirming...')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <span>{isCashOnDelivery ? 'Confirm Order' : 'Confirm Payment'}</span>
+                                            <span>{isCashOnDelivery ? __('Confirm Order') : __('Confirm Payment')}</span>
                                             <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                             </svg>
@@ -251,8 +253,8 @@ export default function Payment({ auth, order, paymentMethod }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                 </svg>
                                 <p className="text-center">
-                                    By confirming, you agree that you have {isCashOnDelivery ? 'reviewed' : 'completed'} the payment.
-                                    {!isCashOnDelivery && ' 🕐 We will verify your payment within 24 hours.'}
+                                    {__('agree declaration 1')} {isCashOnDelivery ? __('reviewed') : __('completed')} {__('agree declaration 2')}
+                                    {!isCashOnDelivery && ' ' + __('verify payment notice')}
                                 </p>
                             </div>
                         </div>
@@ -265,9 +267,9 @@ export default function Payment({ auth, order, paymentMethod }) {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                             <p className="text-sm text-slate-600">
-                                Need help?{' '}
+                                {__('Need help?')}{' '}
                                 <a href="#" className="font-bold text-orange-600 hover:text-orange-800 underline transition-colors">
-                                    Contact Support
+                                    {__('Contact Support')}
                                 </a>
                             </p>
                         </div>
