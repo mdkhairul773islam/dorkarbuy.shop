@@ -1,11 +1,13 @@
 import { Link, usePage, router } from '@inertiajs/react';
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
 import { useDispatch, useSelector } from 'react-redux';
 import { openDrawer, setSearchSuggestions, setSearchLoading } from '../Redux/cartSlice';
 import CartDrawer from '../Components/CartDrawer';
 
 export default function Layout({ children }) {
     const dispatch = useDispatch();
+    const { __, locale } = useTranslation();
     const { searchSuggestions, searchLoading } = useSelector((state) => state.cart);
     const { auth, flash, cartItemsCount, settings } = usePage().props;
     const { url } = usePage();
@@ -132,8 +134,14 @@ export default function Layout({ children }) {
                             </a>
                         </span>
                     </div>
-                    <div className="flex items-center space-x-2 font-medium text-orange-400">
-                        <span>দরকারবাই — যা দরকার, সব এক জায়গায়</span>
+                    <div className="flex items-center space-x-4 font-medium text-orange-400">
+                        <span>{__('Ribbon text')}</span>
+                        <span className="text-slate-700">|</span>
+                        <div className="flex items-center space-x-1.5 bg-slate-800 px-2 py-0.5 rounded text-white text-[10px] select-none">
+                            <a href="/lang/en" className={`hover:text-orange-400 transition-colors ${locale === 'en' ? 'text-orange-400 font-bold' : 'text-gray-300'}`}>EN</a>
+                            <span className="text-slate-600">/</span>
+                            <a href="/lang/bn" className={`hover:text-orange-400 transition-colors ${locale === 'bn' ? 'text-orange-400 font-bold' : 'text-gray-300'}`}>বাংলা</a>
+                        </div>
                     </div>
                 </div>
             </div>

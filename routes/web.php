@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Language Switcher
+Route::get('/lang/{locale}', function (string $locale) {
+    if (in_array($locale, ['en', 'bn'])) {
+        session()->put('locale', $locale);
+    }
+
+    return back();
+})->name('locale.switch');
+
 // Dynamic Pages
 Route::get('/p/{slug}', [PageController::class, 'show'])->name('page.show');
 
